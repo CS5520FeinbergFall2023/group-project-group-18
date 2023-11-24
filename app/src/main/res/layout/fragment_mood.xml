@@ -1,14 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MoodFragment">
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/yourDayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Day"
+        android:textSize="28sp"
+        android:textColor="#0000FF"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
 
-</FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#0000FF"
+        android:layout_alignBottom="@id/yourDayText"
+        android:layout_marginTop="4dp"/>
+
+    <FrameLayout
+        android:id="@+id/FrameSeekBar"
+        android:layout_width="50dp"
+        android:layout_height="400dp"
+        android:layout_centerInParent="true">
+
+    </FrameLayout>
+    <!-- 情绪滑块 -->
+    <SeekBar
+        android:id="@+id/moodSeekBar"
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:max="10"
+        android:progress="5"
+        android:progressDrawable="@drawable/custom_progress"
+        android:rotation="270"
+        android:thumb="@drawable/custom_thumb" />
+
+
+
+    <TextView
+        android:id="@+id/moodTextGood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/FrameSeekBar"
+        android:layout_toRightOf="@id/FrameSeekBar"
+        android:text="心情好"
+        android:layout_marginLeft="16dp"/>
+
+
+    <TextView
+        android:id="@+id/moodTextAverage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@id/FrameSeekBar"
+        android:text="一般"
+        android:layout_marginLeft="16dp"/>
+
+
+    <TextView
+        android:id="@+id/moodTextBad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/FrameSeekBar"
+        android:layout_toRightOf="@id/FrameSeekBar"
+        android:text="心情差"
+        android:layout_marginLeft="16dp"/>
+
+
+    <TextView
+        android:id="@+id/moodTextScaleTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/FrameSeekBar"
+        android:layout_toLeftOf="@id/FrameSeekBar"
+        android:text="10"
+        android:layout_marginRight="16dp"/>
+
+
+    <TextView
+        android:id="@+id/moodTextScaleMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toLeftOf="@id/FrameSeekBar"
+        android:text="5"
+        android:layout_marginRight="16dp"/>
+
+
+    <TextView
+        android:id="@+id/moodTextScaleBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/FrameSeekBar"
+        android:layout_alignBottom="@id/FrameSeekBar"
+        android:text="0"
+        android:layout_marginRight="16dp"/>
+
+</RelativeLayout>

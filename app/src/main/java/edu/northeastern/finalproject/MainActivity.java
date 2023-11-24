@@ -1,8 +1,11 @@
 package edu.northeastern.finalproject;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 
 import edu.northeastern.finalproject.databinding.ActivityMainBinding;
 
@@ -13,20 +16,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
         setContentView(binding.getRoot());
 
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if(item.getItemId() == R.id.mood){
-                return true;
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+
+            if(item.getItemId() == R.id.mood) {
+                transaction.replace(R.id.fragment_container, new MoodFragment());
             } else if (item.getItemId() == R.id.record) {
-                return true;
+                // Replace with RecordFragment
+                // transaction.replace(R.id.fragment_container, new RecordFragment());
             } else if (item.getItemId() == R.id.community) {
-                return true;
+                // Replace with CommunityFragment
+                // transaction.replace(R.id.fragment_container, new CommunityFragment());
             } else if (item.getItemId() == R.id.photo){
-                return true;
+                // Replace with PhotoFragment
+                // transaction.replace(R.id.fragment_container, new PhotoFragment());
             }
+
+            transaction.commit();
             return true;
         });
+
+
+//        if (savedInstanceState == null) {
+//            binding.bottomNavigationView.setSelectedItemId(R.id.mood);
+//        }
     }
 }
