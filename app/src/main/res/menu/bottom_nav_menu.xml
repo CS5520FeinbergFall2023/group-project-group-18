@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Mood"
+        android:icon="@drawable/baseline_mood_24"
+        android:id="@+id/mood"/>
+    <item
+        android:title="Record"
+        android:icon="@drawable/baseline_record_24"
+        android:id="@+id/record"/>
+    <item
+        android:title="Community"
+        android:icon="@drawable/baseline_community_24"
+        android:id="@+id/community"/>
+    <item
+        android:title="Photo"
+        android:icon="@drawable/baseline_photo_24"
+        android:id="@+id/photo"/>
+</menu>
