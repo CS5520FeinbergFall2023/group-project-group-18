@@ -4,6 +4,29 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"/>
+
+    <ImageView
+        android:id="@+id/ic_status_signal"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_status_signal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+
+    <ImageView
+        android:id="@+id/ic_status_wifi"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_status_wifi"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"/>
+
 
     <TextView
         android:id="@+id/yourDayText"
@@ -14,6 +37,17 @@
         android:textColor="#0000FF"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/moodValueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/FrameSeekBar"
+        android:layout_centerHorizontal="true"
+        android:textSize="25sp"
+        android:textColor="#000000"
+        android:text="10"
+        android:layout_marginBottom="16dp"/>
+
 
 
     <View
@@ -25,12 +59,12 @@
 
     <FrameLayout
         android:id="@+id/FrameSeekBar"
-        android:layout_width="50dp"
+        android:layout_width="90dp"
         android:layout_height="400dp"
         android:layout_centerInParent="true">
 
     </FrameLayout>
-    <!-- 情绪滑块 -->
+
     <SeekBar
         android:id="@+id/moodSeekBar"
         android:layout_width="400dp"
@@ -40,7 +74,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginBottom="50dp"
         android:max="10"
-        android:progress="5"
+        android:progress="10"
         android:progressDrawable="@drawable/custom_progress"
         android:rotation="270"
         android:thumb="@drawable/custom_thumb" />
@@ -51,30 +85,69 @@
         android:id="@+id/moodTextGood"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/FrameSeekBar"
-        android:layout_toRightOf="@id/FrameSeekBar"
-        android:text="心情好"
-        android:layout_marginLeft="16dp"/>
+        android:layout_below="@id/yourDayText"
+        android:layout_toLeftOf="@id/moodImageGood"
+        android:text="7-10"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="8dp"/>
+
+    <ImageView
+        android:id="@+id/moodImageGood"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/yourDayText"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_mood_good"
+        android:contentDescription="@string/mood_good"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="16dp"/>
 
 
     <TextView
         android:id="@+id/moodTextAverage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_toRightOf="@id/FrameSeekBar"
-        android:text="一般"
-        android:layout_marginLeft="16dp"/>
+        android:layout_below="@id/moodTextGood"
+        android:layout_alignTop="@id/moodImageAverage"
+        android:layout_toLeftOf="@id/moodImageAverage"
+        android:text="4-7"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="8dp"/>
+
+    <ImageView
+        android:id="@+id/moodImageAverage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/moodImageGood"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_mood_average"
+        android:contentDescription="@string/mood_average"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="16dp"/>
 
 
     <TextView
         android:id="@+id/moodTextBad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/FrameSeekBar"
-        android:layout_toRightOf="@id/FrameSeekBar"
-        android:text="心情差"
-        android:layout_marginLeft="16dp"/>
+        android:layout_below="@id/moodTextAverage"
+        android:layout_alignTop="@id/moodImageBad"
+        android:layout_toLeftOf="@id/moodImageBad"
+        android:text="0-4"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="8dp"/>
+
+    <ImageView
+        android:id="@+id/moodImageBad"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/moodImageAverage"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_mood_bad"
+        android:contentDescription="@string/mood_bad"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="16dp"/>
+
 
 
     <TextView
