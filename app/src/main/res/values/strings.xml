@@ -2,4 +2,7 @@
     <string name="app_name">Final Project</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mood_good">心情好</string>
+    <string name="mood_average">一般</string>
+    <string name="mood_bad">心情差</string>
 </resources>
