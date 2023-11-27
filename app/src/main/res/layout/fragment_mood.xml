@@ -20,10 +20,10 @@
         android:layout_alignParentStart="true"/>
 
     <ImageView
-        android:id="@+id/ic_status_wifi"
+        android:id="@+id/ic_calender"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_status_wifi"
+        android:src="@drawable/ic_calender_24"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"/>
 
@@ -37,6 +37,7 @@
         android:textColor="#0000FF"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
+
     <TextView
         android:id="@+id/moodValueText"
         android:layout_width="wrap_content"
