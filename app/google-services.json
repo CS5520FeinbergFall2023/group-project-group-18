@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "536451660218",
+    "project_id": "mindharbor-df4e6",
+    "storage_bucket": "mindharbor-df4e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536451660218:android:40469bd06fcee98eed4583",
+        "android_client_info": {
+          "package_name": "edu.northeastern.finalproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfUsUgGYLSHXefIKXMMUBAGd3J4gUgC-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

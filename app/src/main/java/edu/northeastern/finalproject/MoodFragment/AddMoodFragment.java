@@ -4,12 +4,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
@@ -25,8 +30,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.text.DateFormatSymbols;
 
+import edu.northeastern.finalproject.Auth.LoginActivity;
+import edu.northeastern.finalproject.Auth.RegisterActivity;
 import edu.northeastern.finalproject.R;
 
 
@@ -35,7 +46,8 @@ public class AddMoodFragment extends Fragment {
     private SeekBar moodSeekBar;
     private ImageView moodImageGood, moodImageAverage, moodImageBad;
     private ImageView sideBar;
-
+    private Button btnRegisterLogin;
+    private ImageView icStatusSignal;
     private TextView moodValueText;
 
     public AddMoodFragment() {
@@ -55,6 +67,10 @@ public class AddMoodFragment extends Fragment {
         moodImageAverage = view.findViewById(R.id.moodImageAverage);
         moodImageBad = view.findViewById(R.id.moodImageBad);
         moodValueText = view.findViewById(R.id.moodValueText);
+        btnRegisterLogin = view.findViewById(R.id.btnRegisterLogin);
+        icStatusSignal = view.findViewById(R.id.ic_status_signal);
+
+        checkLoginStatus();
 
         moodImageGood.setImageResource(R.drawable.ic_mood_good);
         moodImageAverage.setImageResource(R.drawable.ic_mood_average);
@@ -101,7 +117,50 @@ public class AddMoodFragment extends Fragment {
             }
         });
 
+        icStatusSignal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v);
+            }
+        });
+
+        btnRegisterLogin.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
+    }
+
+    private void showPopupMenu(View view){
+        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        popupMenu.getMenu().add(Menu.NONE, Menu.FIRST, Menu.NONE, "Log Out");
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == Menu.FIRST) {
+                logoutUser();
+                return true;
+            }
+            return false;
+        });
+        popupMenu.show();
+    }
+
+    private void logoutUser(){
+        FirebaseAuth.getInstance().signOut();
+        checkLoginStatus();
+    }
+    private void checkLoginStatus() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            icStatusSignal.setVisibility(View.VISIBLE);
+            btnRegisterLogin.setVisibility(View.GONE);
+        } else {
+            icStatusSignal.setVisibility(View.GONE);
+            btnRegisterLogin.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showDialog() {
