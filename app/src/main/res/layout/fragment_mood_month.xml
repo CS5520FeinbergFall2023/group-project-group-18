@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
 
     <!-- TODO: Update Month Mood fragment layout -->
@@ -16,11 +18,22 @@
         android:layout_centerHorizontal="true"/>
 
     <View
+        android:id="@+id/MonthTextSplit"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#0000FF"
         android:layout_alignBottom="@id/yourMonthText"
         android:layout_marginTop="4dp"/>
+
+    <com.haibin.calendarview.CalendarView
+        android:id="@+id/calendarViewMonth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/MonthTextSplit"
+        android:layout_marginTop="16dp"
+        app:month_view="edu.northeastern.finalproject.MoodFragment.CustomMonthView"
+        app:month_view_show_mode="mode_only_current"
+        tools:ignore="MissingClass" />
 
 
 </RelativeLayout>
