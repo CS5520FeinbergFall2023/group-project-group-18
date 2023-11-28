@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
 
     <!-- TODO: Update Month Mood fragment layout -->
@@ -16,11 +18,40 @@
         android:layout_centerHorizontal="true"/>
 
     <View
+        android:id="@+id/WeekTextSplit"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="#0000FF"
         android:layout_alignBottom="@id/yourWeekText"
         android:layout_marginTop="4dp"/>
+
+    <com.haibin.calendarview.CalendarLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/WeekTextSplit"
+        android:layout_marginTop="16dp"
+        app:default_status="shrink"
+        app:calendar_show_mode="only_week_view"
+        app:calendar_content_view_id="@+id/recyclerView"
+        tools:ignore="MissingClass">
+        <com.haibin.calendarview.CalendarView
+            android:id="@+id/calendarViewWeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:calendar_show_mode="only_week_view"
+            app:week_background="#fff"
+            app:week_start_with="sun"
+            app:week_text_color="#e1e1e1"
+            app:week_view="edu.northeastern.finalproject.MoodFragment.CustomWeekView"
+            tools:ignore="MissingClass" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff" />
+    </com.haibin.calendarview.CalendarLayout>
 
 
 </RelativeLayout>
