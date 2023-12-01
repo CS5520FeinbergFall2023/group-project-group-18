@@ -1,11 +1,15 @@
 package edu.northeastern.finalproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import edu.northeastern.finalproject.Auth.LoginActivity;
 import edu.northeastern.finalproject.databinding.ActivityMainBinding;
 import edu.northeastern.finalproject.MoodFragment.AddMoodFragment;
 
@@ -16,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
@@ -49,5 +55,23 @@ public class MainActivity extends AppCompatActivity {
 //        if (savedInstanceState == null) {
 //            binding.bottomNavigationView.setSelectedItemId(R.id.mood);
 //        }
+    }
+    private void checkUserLogin() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            // User is logged in, show AddMoodFragment
+            showAddMoodFragment();
+        } else {
+            // User is not logged in, show LoginActivity
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish(); // Close MainActivity
+        }
+    }
+
+    private void showAddMoodFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, new AddMoodFragment());
+        transaction.commit();
     }
 }

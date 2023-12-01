@@ -46,7 +46,6 @@ public class AddMoodFragment extends Fragment {
     private SeekBar moodSeekBar;
     private ImageView moodImageGood, moodImageAverage, moodImageBad;
     private ImageView sideBar;
-    private Button btnRegisterLogin;
     private ImageView icStatusSignal;
     private TextView moodValueText;
 
@@ -67,10 +66,7 @@ public class AddMoodFragment extends Fragment {
         moodImageAverage = view.findViewById(R.id.moodImageAverage);
         moodImageBad = view.findViewById(R.id.moodImageBad);
         moodValueText = view.findViewById(R.id.moodValueText);
-        btnRegisterLogin = view.findViewById(R.id.btnRegisterLogin);
         icStatusSignal = view.findViewById(R.id.ic_status_signal);
-
-        checkLoginStatus();
 
         moodImageGood.setImageResource(R.drawable.ic_mood_good);
         moodImageAverage.setImageResource(R.drawable.ic_mood_average);
@@ -124,13 +120,6 @@ public class AddMoodFragment extends Fragment {
             }
         });
 
-        btnRegisterLogin.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
 
         return view;
     }
@@ -150,16 +139,22 @@ public class AddMoodFragment extends Fragment {
 
     private void logoutUser(){
         FirebaseAuth.getInstance().signOut();
-        checkLoginStatus();
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
     private void checkLoginStatus() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            icStatusSignal.setVisibility(View.VISIBLE);
-            btnRegisterLogin.setVisibility(View.GONE);
-        } else {
-            icStatusSignal.setVisibility(View.GONE);
-            btnRegisterLogin.setVisibility(View.VISIBLE);
+        if (currentUser == null) {
+            // User is not logged in, start LoginActivity
+            Context context = getContext();
+            if (context != null) {
+                Intent intent = new Intent(context, LoginActivity.class);
+                context.startActivity(intent);
+                if (getActivity() != null) {
+                    getActivity().finish(); // Close the current Fragment's hosting Activity
+                }
+            }
         }
     }
 
