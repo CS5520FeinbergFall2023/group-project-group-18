@@ -85,13 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }else{
-                if (task.getException() instanceof FirebaseAuthInvalidUserException){
-                    Toast.makeText(LoginActivity.this,  "Email address does not exist.", Toast.LENGTH_SHORT).show();
-                }else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException){
-                    Toast.makeText(LoginActivity.this, "Password is incorrect.", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(LoginActivity.this, "Login error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(LoginActivity.this, "Login information is incorrect. Please try again.", Toast.LENGTH_SHORT).show();
             }
         });
     }
