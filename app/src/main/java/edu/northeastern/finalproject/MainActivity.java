@@ -43,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 // Replace with CommunityFragment
                 // transaction.replace(R.id.fragment_container, new CommunityFragment());
             } else if (item.getItemId() == R.id.photo){
-                // Replace with PhotoFragment
-                // transaction.replace(R.id.fragment_container, new PhotoFragment());
+                transaction.replace(R.id.fragment_container, new PhotoFragment());
             }
 
             transaction.commit();

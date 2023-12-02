@@ -36,6 +36,13 @@ android {
 }
 
 dependencies {
+
+    // Firebase Storage
+    implementation ("com.google.firebase:firebase-storage:latest_version")
+
+    // Firebase Firestore
+    implementation ("com.google.firebase:firebase-firestore:latest_version")
+
     implementation("com.github.angcyo:calendarview:3.7.1.42")
     
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
@@ -51,6 +58,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.google.firebase:firebase-firestore:24.9.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
