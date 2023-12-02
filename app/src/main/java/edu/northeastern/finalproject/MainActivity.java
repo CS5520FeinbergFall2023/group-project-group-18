@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        checkUserLogin();
+        // checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
             if(item.getItemId() == R.id.mood) {
                 transaction.replace(R.id.fragment_container, new AddMoodFragment());
             } else if (item.getItemId() == R.id.record) {
-                // Replace with RecordFragment
-                // transaction.replace(R.id.fragment_container, new RecordFragment());
+                transaction.replace(R.id.fragment_container, new RecordFragment());
             } else if (item.getItemId() == R.id.community) {
                 // Replace with CommunityFragment
                 // transaction.replace(R.id.fragment_container, new CommunityFragment());
