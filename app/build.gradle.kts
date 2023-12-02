@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.angcyo:CalendarView:3.7.1.42")
+    implementation("com.github.angcyo:calendarview:3.7.1.42")
     
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")

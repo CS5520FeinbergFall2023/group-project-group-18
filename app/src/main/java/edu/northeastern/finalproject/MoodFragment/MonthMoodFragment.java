@@ -1,7 +1,11 @@
 package edu.northeastern.finalproject.MoodFragment;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -10,40 +14,26 @@ import android.view.ViewGroup;
 
 import edu.northeastern.finalproject.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MonthMoodFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MonthMoodFragment extends Fragment {
+import com.haibin.calendarview.Calendar;
+import com.haibin.calendarview.CalendarLayout;
+import com.haibin.calendarview.CalendarView;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.util.HashMap;
+import java.util.Map;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class MonthMoodFragment extends Fragment{
+
+    protected View mRootView;
+    protected LayoutInflater mInflater;
+    protected Context mContext;
+    CalendarView mCalendarView;
 
     public MonthMoodFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MonthMoodFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MonthMoodFragment newInstance(String param1, String param2) {
         MonthMoodFragment fragment = new MonthMoodFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,16 +41,66 @@ public class MonthMoodFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mood_month, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mRootView != null) {
+            ViewGroup parent = (ViewGroup) mRootView.getParent();
+            if (parent != null)
+                parent.removeView(mRootView);
+        } else {
+            mRootView = inflater.inflate(R.layout.fragment_mood_month, container, false);
+            mInflater = inflater;
+            initView();
+            initData();
+        }
+        return mRootView;
     }
+
+
+    @SuppressLint("SetTextI18n")
+    protected void initView() {
+        mCalendarView = mRootView.findViewById(R.id.calendarViewMonth);
+    }
+
+    protected void initData() {
+
+        int year = mCalendarView.getCurYear();
+        int month = mCalendarView.getCurMonth();
+
+        Map<String, Calendar> map = new HashMap<>();
+        map.put(getSchemeCalendar(year, month, 3, 0xFF40db25, "假").toString(),
+                getSchemeCalendar(year, month, 3, 0xFF40db25, "假"));
+        map.put(getSchemeCalendar(year, month, 6, 0xFFe69138, "事").toString(),
+                getSchemeCalendar(year, month, 6, 0xFFe69138, "事"));
+        map.put(getSchemeCalendar(year, month, 9, 0xFFdf1356, "议").toString(),
+                getSchemeCalendar(year, month, 9, 0xFFdf1356, "议"));
+        map.put(getSchemeCalendar(year, month, 13, 0xFFedc56d, "记").toString(),
+                getSchemeCalendar(year, month, 13, 0xFFedc56d, "记"));
+        map.put(getSchemeCalendar(year, month, 14, 0xFFedc56d, "记").toString(),
+                getSchemeCalendar(year, month, 14, 0xFFedc56d, "记"));
+        map.put(getSchemeCalendar(year, month, 15, 0xFFaacc44, "假").toString(),
+                getSchemeCalendar(year, month, 15, 0xFFaacc44, "假"));
+        map.put(getSchemeCalendar(year, month, 18, 0xFFbc13f0, "记").toString(),
+                getSchemeCalendar(year, month, 18, 0xFFbc13f0, "记"));
+        map.put(getSchemeCalendar(year, month, 25, 0xFF13acf0, "假").toString(),
+                getSchemeCalendar(year, month, 25, 0xFF13acf0, "假"));
+        map.put(getSchemeCalendar(year, month, 27, 0xFF13acf0, "多").toString(),
+                getSchemeCalendar(year, month, 27, 0xFF13acf0, "多"));
+        mCalendarView.setSchemeDate(map);
+    }
+
+    private Calendar getSchemeCalendar(int year, int month, int day, int color, String text) {
+        Calendar calendar = new Calendar();
+        calendar.setYear(year);
+        calendar.setMonth(month);
+        calendar.setDay(day);
+        calendar.setSchemeColor(color);
+        calendar.setScheme(text);
+        return calendar;
+    }
+
+
 }
