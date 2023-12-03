@@ -26,7 +26,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -34,10 +34,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+
+import edu.northeastern.finalproject.Adapter.DatesAdapter;
+import edu.northeastern.finalproject.data.UserDailyRecord;
 
 public class PhotoFragment extends Fragment {
     private Uri photoUri;
@@ -103,8 +104,10 @@ public class PhotoFragment extends Fragment {
         uploadPhotoBtn = view.findViewById(R.id.uploadPhotoBtn);
         datesRecyclerView = view.findViewById(R.id.datesRecyclerView);
 
-        setupRecyclerView();
+
         setupButtons();
+        fetchUserPhotos();
+        setupRecyclerView();
 
         return view;
     }
@@ -187,25 +190,34 @@ public class PhotoFragment extends Fragment {
         });
     }
     private void updatePhotoUrlInFirestore(String photoUrl, String userId) {
-        Log.e("2222","firestore");
-        DocumentReference userDocRef = FirebaseUtil.getFirestore().collection("users").document(userId);
+        String currentDate = getCurrentDate();
+        DocumentReference dailyRecordRef = FirebaseUtil.getFirestore()
+                .collection("users")
+                .document(userId)
+                .collection("dailyRecords")
+                .document(currentDate); // Assuming the document ID is the date
 
-        userDocRef.get().addOnCompleteListener(task -> {
+        // Get the current date as a java.util.Date object
+        Date date = new Date();
+
+        // Convert the java.util.Date object to a Firestore Timestamp
+        Timestamp timestamp = new Timestamp(date);
+
+        dailyRecordRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document != null && document.exists()) {
-                    // User document exists, update the photoUrls array
-                    userDocRef.update("photoUrls", FieldValue.arrayUnion(photoUrl));
+                    // Daily record exists, update the photoUrls array
+                    dailyRecordRef.update("photoUrls", FieldValue.arrayUnion(photoUrl));
                 } else {
-                    // User document does not exist, create a new one with the photoUrl
-                    Map<String, Object> userData = new HashMap<>();
+                    // Daily record does not exist, create a new one with the photoUrl
                     List<String> photoUrls = new ArrayList<>();
                     photoUrls.add(photoUrl);
-                    userData.put("photoUrls", photoUrls);
-                    userDocRef.set(userData);
+                    UserDailyRecord newRecord = new UserDailyRecord(userId, date, null, photoUrls, 0, 0.0);
+                    dailyRecordRef.set(newRecord);
                 }
             } else {
-                Log.e("PhotoFragment", "Error getting user document", task.getException());
+                Log.e("PhotoFragment", "Error getting daily record", task.getException());
             }
         });
     }
@@ -222,6 +234,36 @@ public class PhotoFragment extends Fragment {
     private String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return dateFormat.format(new Date());
+    }
+
+    private void fetchUserPhotos() {
+        String userId = getUserId();
+        if (userId == null) {
+            // Handle not logged in user
+            return;
+        }
+
+        FirebaseUtil.getFirestore().collection("users").document(userId)
+                .collection("dailyRecords") // Assuming you have a sub-collection for daily records
+                .orderBy("date", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // Handle the fetched data
+                    List<UserDailyRecord> records = queryDocumentSnapshots.toObjects(UserDailyRecord.class);
+                    updateRecyclerView(records);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the error
+                });
+    }
+
+
+    private void updateRecyclerView(List<UserDailyRecord> records) {
+        for (UserDailyRecord record : records) {
+            Log.e("PhotoFragment", "Record: " + record.toString()); // Override toString() in UserDailyRecord to print meaningful data
+        }
+        DatesAdapter adapter = new DatesAdapter(records);
+        datesRecyclerView.setAdapter(adapter);
     }
 
 }
