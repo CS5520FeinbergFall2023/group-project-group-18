@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // checkUserLogin();
+        //TODO: remember to uncomment this line
+         checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 

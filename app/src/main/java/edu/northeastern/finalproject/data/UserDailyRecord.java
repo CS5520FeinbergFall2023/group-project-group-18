@@ -1,11 +1,13 @@
 package edu.northeastern.finalproject.data;
 
 import com.google.firebase.Timestamp;
+
+import java.util.Date;
 import java.util.List;
 
 public class UserDailyRecord {
     private String userId;
-    private Timestamp date;
+    private Date date;
     private Integer mood;
     private List<String> photoUrls; // URLs to photos in Firebase Storage
     private int steps;
@@ -16,7 +18,7 @@ public class UserDailyRecord {
     }
 
     // Constructor with parameters
-    public UserDailyRecord(String userId, Timestamp date, Integer mood, List<String> photoUrls, int steps, double heartRate) {
+    public UserDailyRecord(String userId, Date date, Integer mood, List<String> photoUrls, int steps, double heartRate) {
         this.userId = userId;
         this.date = date;
         this.mood = mood;
@@ -34,11 +36,11 @@ public class UserDailyRecord {
         this.userId = userId;
     }
 
-    public Timestamp getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -72,5 +74,15 @@ public class UserDailyRecord {
 
     public void setHeartRate(double heartRate) {
         this.heartRate = heartRate;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDailyRecord{" +
+                "userId='" + userId + '\'' +
+                ", date=" + date +
+                ", photoUrls=" + photoUrls +
+                ", ... other fields ..." +
+                '}';
     }
 }

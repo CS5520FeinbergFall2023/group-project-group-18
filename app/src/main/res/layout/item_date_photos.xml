@@ -10,12 +10,12 @@
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18pt"
+        android:textSize="8pt"
         android:layout_marginEnd="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/photosRecyclerView"
-        android:layout_width="1dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
