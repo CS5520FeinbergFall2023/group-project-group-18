@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+
 import edu.northeastern.finalproject.Auth.LoginActivity;
 import edu.northeastern.finalproject.communityFragment.CommunityFragment;
 import edu.northeastern.finalproject.databinding.ActivityMainBinding;
@@ -22,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO: remember to uncomment this line
          checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
