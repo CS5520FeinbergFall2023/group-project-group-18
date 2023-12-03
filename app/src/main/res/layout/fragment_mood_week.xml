@@ -40,17 +40,211 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:calendar_show_mode="only_week_view"
-            app:week_background="#fff"
             app:week_start_with="sun"
-            app:week_text_color="#e1e1e1"
             app:week_view="edu.northeastern.finalproject.MoodFragment.CustomWeekView"
             tools:ignore="MissingClass" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ffffff" />
+            <LinearLayout
+                android:id="@+id/mainLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:id="@+id/calendarViewWeek_sunday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="S"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:id="@+id/calendarViewWeek_colorSunday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/circle_shape_default" />
+
+                    <TextView
+                        android:id="@+id/calendarViewWeek_quoteSunday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quote 1"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/calendarViewWeek_monday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="M"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:id="@+id/calendarViewWeek_colorMonday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/circle_shape_default" />
+
+                    <TextView
+                        android:id="@+id/calendarViewWeek_quoteMonday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quote 2"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/calendarViewWeek_Tuesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="T"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:id="@+id/calendarViewWeek_colorTuesday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/circle_shape_default" />
+
+                    <TextView
+                        android:id="@+id/calendarViewWeek_quoteTuesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quote 3"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/calendarViewWeek_Wednesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="W"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:id="@+id/calendarViewWeek_colorWednesday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/circle_shape_default" />
+
+                    <TextView
+                        android:id="@+id/calendarViewWeek_quoteWednesday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quote 4"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/calendarViewWeek_Thursday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="T"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:id="@+id/calendarViewWeek_colorThursday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/circle_shape_default" />
+
+                    <TextView
+                        android:id="@+id/calendarViewWeek_quoteThursday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quote 5"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/calendarViewWeek_Friday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="F"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:id="@+id/calendarViewWeek_colorFriday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/circle_shape_default" />
+
+                    <TextView
+                        android:id="@+id/calendarViewWeek_quoteFriday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quote 6"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/calendarViewWeek_Saturday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="S"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:id="@+id/calendarViewWeek_colorSaturday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/circle_shape_default" />
+
+                    <TextView
+                        android:id="@+id/calendarViewWeek_quoteSaturday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quote 7"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
     </com.haibin.calendarview.CalendarLayout>
 
 
