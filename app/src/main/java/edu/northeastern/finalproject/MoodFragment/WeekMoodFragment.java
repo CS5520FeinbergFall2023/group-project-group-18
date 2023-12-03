@@ -1,12 +1,17 @@
 package edu.northeastern.finalproject.MoodFragment;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import edu.northeastern.finalproject.R;
 
@@ -25,6 +30,7 @@ public class WeekMoodFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View mRootView;
 
     public WeekMoodFragment() {
         // Required empty public constructor
@@ -55,12 +61,35 @@ public class WeekMoodFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mood_week, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mRootView != null) {
+            ViewGroup parent = (ViewGroup) mRootView.getParent();
+            if (parent != null)
+                parent.removeView(mRootView);
+        } else {
+            mRootView = inflater.inflate(R.layout.fragment_mood_week, container, false);
+
+            View colorDot = mRootView.findViewById(R.id.calendarViewWeek_colorSunday);
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3")));
+            colorDot = mRootView.findViewById(R.id.calendarViewWeek_colorMonday);
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+            colorDot = mRootView.findViewById(R.id.calendarViewWeek_colorTuesday);
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFEB3B")));
+            colorDot = mRootView.findViewById(R.id.calendarViewWeek_colorWednesday);
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3")));
+            colorDot = mRootView.findViewById(R.id.calendarViewWeek_colorThursday);
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFEB3B")));
+            colorDot = mRootView.findViewById(R.id.calendarViewWeek_colorFriday);
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+            colorDot = mRootView.findViewById(R.id.calendarViewWeek_colorSaturday);
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFEB3B")));
+        }
+        return mRootView;
     }
 }
