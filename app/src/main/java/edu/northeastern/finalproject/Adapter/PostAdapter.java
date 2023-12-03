@@ -1,4 +1,4 @@
-package edu.northeastern.finalproject.communityFragment;
+package edu.northeastern.finalproject.Adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.northeastern.finalproject.R;
+import edu.northeastern.finalproject.communityFragment.Post;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -23,7 +24,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_community_post, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_community_show, parent, false);
         return new PostViewHolder(view);
     }
 
@@ -45,6 +46,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvUserName = itemView.findViewById(R.id.usernameTextView);
             tvPostContent = itemView.findViewById(R.id.editTextPost);
         }
     }

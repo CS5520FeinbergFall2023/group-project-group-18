@@ -1,6 +1,5 @@
 package edu.northeastern.finalproject.communityFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,11 +18,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import edu.northeastern.finalproject.Adapter.PostAdapter;
 import edu.northeastern.finalproject.R;
 
 
@@ -43,7 +42,6 @@ public class CommunityFragment extends Fragment {
         btnOpenDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Display the custom dialog
                 showPostDialog();
             }
         });
@@ -80,6 +78,7 @@ public class CommunityFragment extends Fragment {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Post post = documentSnapshot.toObject(Post.class);
                             postList.add(post);
+                            System.out.println(post + "from line 81 in comuunity frament ");
                         }
                         postAdapter.notifyDataSetChanged();
                     }
@@ -87,7 +86,7 @@ public class CommunityFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle failure
+
                     }
                 });
     }
