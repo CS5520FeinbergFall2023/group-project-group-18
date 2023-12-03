@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.auth.FirebaseAuth;
 
 import edu.northeastern.finalproject.Auth.LoginActivity;
+import edu.northeastern.finalproject.communityFragment.CommunityFragment;
 import edu.northeastern.finalproject.databinding.ActivityMainBinding;
 import edu.northeastern.finalproject.MoodFragment.AddMoodFragment;
 
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // checkUserLogin();
+        checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
@@ -39,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.record) {
                 transaction.replace(R.id.fragment_container, new RecordFragment());
             } else if (item.getItemId() == R.id.community) {
-                // Replace with CommunityFragment
-                // transaction.replace(R.id.fragment_container, new CommunityFragment());
+                transaction.replace(R.id.fragment_container, new CommunityFragment());
             } else if (item.getItemId() == R.id.photo){
                 transaction.replace(R.id.fragment_container, new PhotoFragment());
             }
