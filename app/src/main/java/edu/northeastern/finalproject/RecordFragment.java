@@ -74,7 +74,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         steps = view.findViewById(R.id.steps);
         warning = view.findViewById(R.id.warning);
 
-        resetSteps();
         loadData();
 
         mSensorManager = (SensorManager)getActivity().getSystemService(SENSOR_SERVICE);
@@ -123,25 +122,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 warning.setText("You are beyond amazing!");
             }
         }
-    }
-
-    private void resetSteps(){
-        steps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),"Long press to reset Steps",Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        steps.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                previewTotalSteps = totalSteps;
-                steps.setText("0");
-                saveData();
-                return true;
-            }
-        });
     }
 
     private void saveData() {
