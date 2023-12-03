@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,10 +23,13 @@ import edu.northeastern.finalproject.R;
 public class PostCommunityFragment extends DialogFragment {
 
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
     }
 
@@ -62,24 +66,21 @@ public class PostCommunityFragment extends DialogFragment {
         btnSubmitPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the submitted post
                 String userPost = editTextPost.getText().toString();
-
-                savePostToFirestore(userPost);
-
-                // Implement logic to display the post on the main interface
-                dismiss(); // Close the dialog
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser != null) {
+                    String userEmail = currentUser.getEmail();
+                    savePostToFirestore(userEmail.split("@")[0], userPost);
+                }
+                dismiss();
             }
         });
     }
 
     // Save the post to Firestore
-    private void savePostToFirestore(String userPost) {
-        // FirebaseUser user = mAuth.getCurrentUser();
-        // Create a new Post object
-        Post post = new Post("user123", userPost);
+    private void savePostToFirestore(String username, String userPost) {
+        Post post = new Post(username, userPost);
 
-        // Add the post to Firestore
         db.collection("posts")
                 .add(post)
                 .addOnCompleteListener(new OnCompleteListener() {
