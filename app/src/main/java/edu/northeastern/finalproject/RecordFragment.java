@@ -1,64 +1,164 @@
 package edu.northeastern.finalproject;
 
+import static android.content.Context.SENSOR_SERVICE;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.Manifest;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RecordFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class RecordFragment extends Fragment {
+public class RecordFragment extends Fragment implements SensorEventListener {
+    private static final int REQUEST_ACTIVITY_RECOGNITION_PERMISSION = 1;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private SensorManager mSensorManager = null;
+    private Sensor stepSensor;
+    private int totalSteps = 0;
+    private int previewTotalSteps = 0;
+    private TextView steps;
+    private TextView warning;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+
 
     public RecordFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RecordFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RecordFragment newInstance(String param1, String param2) {
-        RecordFragment fragment = new RecordFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static RecordFragment newInstance() {
+        return new RecordFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                initSensor();
+            } else {
+                warning.setText("Permission denied. Cannot count steps.");
+            }
+        });
+    }
+
+    private void initSensor() {
+        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        stepSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (stepSensor != null) {
+            mSensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        } else {
+            warning.setText("Step Sensor not available.");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_record, container, false);
+        View view = inflater.inflate(R.layout.fragment_record,container,false);
+        steps = view.findViewById(R.id.steps);
+        warning = view.findViewById(R.id.warning);
+
+        resetSteps();
+        loadData();
+
+        mSensorManager = (SensorManager)getActivity().getSystemService(SENSOR_SERVICE);
+        stepSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
+        } else {
+            initSensor();
+        }
+
+        return view;
+    }
+
+    public void onResume(){
+        super.onResume();
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
+            if(stepSensor != null) {
+                mSensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            }else{
+                mSensorManager.registerListener(this,stepSensor,SensorManager.SENSOR_DELAY_NORMAL);
+            }
+        } else {
+        }
+    }
+
+    public void onPause(){
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
+            totalSteps =(int) event.values[0];
+            int currentSteps = totalSteps - previewTotalSteps;
+            steps.setText(String.valueOf(currentSteps));
+
+            if(currentSteps < 500){
+                warning.setText("It's time to get up!");
+            }else if(currentSteps < 2000){
+                warning.setText("You did great! Adding a bit work-out would make it perfect");
+            } else if (currentSteps < 8000) {
+                warning.setText("You did amazing today!");
+            } else {
+                warning.setText("You are beyond amazing!");
+            }
+        }
+    }
+
+    private void resetSteps(){
+        steps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"Long press to reset Steps",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        steps.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                previewTotalSteps = totalSteps;
+                steps.setText("0");
+                saveData();
+                return true;
+            }
+        });
+    }
+
+    private void saveData() {
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("key1",String.valueOf(previewTotalSteps));
+        editor.apply();
+    }
+
+    private  void loadData(){
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        int savedNumber = (int) sharedPref.getFloat("key1",0f);
+        previewTotalSteps = savedNumber;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
