@@ -259,9 +259,9 @@ public class PhotoFragment extends Fragment {
 
 
     private void updateRecyclerView(List<UserDailyRecord> records) {
-        for (UserDailyRecord record : records) {
-            Log.e("PhotoFragment", "Record: " + record.toString());
-        }
+//        for (UserDailyRecord record : records) {
+//            Log.e("PhotoFragment", "Record: " + record.toString());
+//        }
         datesAdapter.setRecords(records); // Update the adapter's data
         datesAdapter.notifyDataSetChanged(); // Notify the adapter of the dataset change
 
