@@ -39,7 +39,9 @@ public class DatesAdapter extends RecyclerView.Adapter<DatesAdapter.DateViewHold
     public int getItemCount() {
         return records.size();
     }
-
+    public void setRecords(List<UserDailyRecord> records) {
+        this.records = records;
+    }
     public static class DateViewHolder extends RecyclerView.ViewHolder {
 
         private TextView dateTextView;
@@ -64,6 +66,7 @@ public class DatesAdapter extends RecyclerView.Adapter<DatesAdapter.DateViewHold
             PhotosAdapter photosAdapter = new PhotosAdapter(record.getPhotoUrls());
             photosRecyclerView.setAdapter(photosAdapter);
         }
+
 
     }
 }
