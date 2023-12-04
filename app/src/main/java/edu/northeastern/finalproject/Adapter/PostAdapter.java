@@ -30,9 +30,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = posts.get(position);
-        holder.tvUserName.setText(post.getUserName());
-        holder.tvPostContent.setText(post.getContent());
+        int leftPosition = position * 2;
+        int rightPosition = position * 2 + 1;
+
+        if (leftPosition < posts.size()) {
+            Post leftPost = posts.get(leftPosition);
+            holder.tvPostContent1.setText(leftPost.getContent());
+            holder.tvUserName1.setText(leftPost.getUserName());
+        }
+
+        if (rightPosition < posts.size()) {
+            Post rightPost = posts.get(rightPosition);
+            holder.tvPostContent2.setText(rightPost.getContent());
+            holder.tvUserName2.setText(rightPost.getUserName());
+        }
     }
 
     @Override
@@ -41,13 +52,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvUserName;
-        private TextView tvPostContent;
+        private TextView tvUserName1;
+        private TextView tvPostContent1;
+        private TextView tvUserName2;
+        private TextView tvPostContent2;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvUserName = itemView.findViewById(R.id.usernameTextView);
-            tvPostContent = itemView.findViewById(R.id.editTextPost);
+            tvPostContent1 = itemView.findViewById(R.id.editTextPost1);
+            tvUserName1 = itemView.findViewById(R.id.usernameTextView1);
+            tvPostContent2 = itemView.findViewById(R.id.editTextPost2);
+            tvUserName2 = itemView.findViewById(R.id.usernameTextView2);
         }
     }
 }
