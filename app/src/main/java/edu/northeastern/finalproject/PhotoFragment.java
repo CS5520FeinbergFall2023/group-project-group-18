@@ -116,7 +116,7 @@ public class PhotoFragment extends Fragment {
 
     private void setupRecyclerView() {
         datesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        datesAdapter = new DatesAdapter(new ArrayList<>());
+        datesAdapter = new DatesAdapter(new ArrayList<>()); // should set up adapter right after recyclerView
         datesRecyclerView.setAdapter(datesAdapter);
     }
 
@@ -184,7 +184,6 @@ public class PhotoFragment extends Fragment {
 
         photoRef.putFile(photoUri).addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
             updatePhotoUrlInFirestore(downloadUri.toString(), userId);
-            fetchUserPhotos();
         })).addOnFailureListener(e -> {
             // Handle failure
         });
@@ -206,7 +205,7 @@ public class PhotoFragment extends Fragment {
                 if (document != null && document.exists()) {
                     // Daily record exists, update the photoUrls array
                     dailyRecordRef.update("photoUrls", FieldValue.arrayUnion(photoUrl))
-                            .addOnSuccessListener(aVoid -> fetchUserPhotos())
+                            .addOnSuccessListener(aVoid -> fetchUserPhotos()) // only call fetchUserPhoto() after success, or the function might be called before database updates, then you might face new photo not show (asyn)
                             .addOnFailureListener(e -> Log.e("PhotoFragment", "Error updating Firestore", e));
                 } else {
                     // Daily record does not exist, create a new one with the photoUrl
