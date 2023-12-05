@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import android.os.Bundle;
+
+import androidx.core.net.ParseException;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -40,11 +45,18 @@ import java.util.Map;
 
 import edu.northeastern.finalproject.Auth.LoginActivity;
 import edu.northeastern.finalproject.Auth.RegisterActivity;
+import edu.northeastern.finalproject.FirebaseUtil;
 import edu.northeastern.finalproject.R;
+import edu.northeastern.finalproject.data.UserDailyRecord;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+
+import org.w3c.dom.Document;
 
 
 public class AddMoodFragment extends Fragment {
@@ -56,6 +68,9 @@ public class AddMoodFragment extends Fragment {
     private TextView moodValueText;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    private FirebaseUser currentUser;
+
 
 
     public AddMoodFragment() {
@@ -129,6 +144,16 @@ public class AddMoodFragment extends Fragment {
             }
         });
 
+        String userId = FirebaseUtil.getAuth().getCurrentUser().getUid();
+
+        String currentDate = getCurrentDate();
+        DocumentReference dailyRecordRef = FirebaseUtil.getFirestore()
+                .collection("users")
+                .document(userId)
+                .collection("dailyRecords")
+                .document(currentDate);
+
+        getTodayMood(dailyRecordRef);
 
         return view;
     }
@@ -152,20 +177,20 @@ public class AddMoodFragment extends Fragment {
         startActivity(intent);
         getActivity().finish();
     }
-    private void checkLoginStatus() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            // User is not logged in, start LoginActivity
-            Context context = getContext();
-            if (context != null) {
-                Intent intent = new Intent(context, LoginActivity.class);
-                context.startActivity(intent);
-                if (getActivity() != null) {
-                    getActivity().finish(); // Close the current Fragment's hosting Activity
-                }
-            }
-        }
-    }
+//    private void checkLoginStatus() {
+//        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//        if (currentUser == null) {
+//            // User is not logged in, start LoginActivity
+//            Context context = getContext();
+//            if (context != null) {
+//                Intent intent = new Intent(context, LoginActivity.class);
+//                context.startActivity(intent);
+//                if (getActivity() != null) {
+//                    getActivity().finish(); // Close the current Fragment's hosting Activity
+//                }
+//            }
+//        }
+//    }
 
     private void showDialog() {
         final Dialog dialog = new Dialog(getActivity());
@@ -226,42 +251,90 @@ public class AddMoodFragment extends Fragment {
 //        showSavedMoodData(currentDate, dayOfWeekStr, moodValue);
 //    }
     private void saveMoodValue(int moodValue) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        currentUser = mAuth.getCurrentUser();
 
-        String email = null;
         if (currentUser != null) {
-            email = currentUser.getEmail();
+            String userId = currentUser.getUid();
+            Date currentDate = new Date(); // Get current Date object
+
+            // Create an instance of UserDailyRecord
+            UserDailyRecord record = new UserDailyRecord();
+            record.setUserId(userId); // Set the userId
+            record.setDate(currentDate); // Set the date
+            record.setMood(moodValue); // Set the mood value
+            // Assuming steps and heartRate are not required for this operation,
+            // otherwise set them as well.
+
+            DocumentReference dailyRecordRef = firebaseFirestore
+                    .collection("users")
+                    .document(userId)
+                    .collection("dailyRecords")
+                    .document(getCurrentDate());
+
+            // Save the UserDailyRecord instance to Firestore
+            dailyRecordRef.set(record, SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        try {
+                            showSavedMoodData(getCurrentDate(), moodValue);
+                        } catch (java.text.ParseException e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("Firestore", "Error when storing mood data", e);
+                    });
         }
-
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String currentDate = dateFormat.format(calendar.getTime());
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        String dayOfWeekStr = new DateFormatSymbols().getWeekdays()[dayOfWeek];
-
-        Map<String, Object> moodData = new HashMap<>();
-        moodData.put("email", email);
-        moodData.put("moodValue", moodValue);
-        moodData.put("date", currentDate);
-        moodData.put("dayOfWeek", dayOfWeekStr);
-
-        db.collection("moods")
-                .add(moodData)
-                .addOnSuccessListener(documentReference -> {
-                    showSavedMoodData(currentDate, dayOfWeekStr, moodValue);
-                })
-                .addOnFailureListener(e -> {
-                    System.out.println("error when storing data");
-                });
     }
 
-    private void showSavedMoodData(String date, String dayOfWeek, int moodValue) {
-
-        String message = String.format(Locale.getDefault(), "%s, %s, %d", date, dayOfWeek, moodValue);
-
-
+    private void showSavedMoodData(String date, int moodValue) throws java.text.ParseException {
+        String dayOfWeekStr = getDayOfWeekStr(date);
+        String message = String.format(Locale.getDefault(), "%s, %s, %d", date, dayOfWeekStr, moodValue);
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
+    private String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return dateFormat.format(new Date());
+    }
+
+    private void getTodayMood(DocumentReference dailyRecordRef){
+        dailyRecordRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Check if the mood field is not null
+                    if (document.contains("mood") && document.get("mood") != null) {
+                        int mood = document.getLong("mood").intValue(); // Cast to int if you're sure it's an integer
+                        // Now you can use this mood value to update your UI
+                        moodSeekBar.setProgress(mood);
+                        moodValueText.setText(String.valueOf(mood));
+                    } else {
+                        // Handle the case where mood is null or not present
+                        moodSeekBar.setProgress(10); // Default value
+                        moodValueText.setText("10");
+                        Toast.makeText(getContext(),"You have not track your mood today~", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    // Document does not exist
+                    moodSeekBar.setProgress(10); // Default value
+                    moodValueText.setText("10");
+                }
+            } else {
+                // Handle the error
+                Log.e("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+    private String getDayOfWeekStr(String dateStr) throws java.text.ParseException {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return new DateFormatSymbols().getWeekdays()[calendar.get(Calendar.DAY_OF_WEEK)];
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 }

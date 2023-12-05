@@ -248,13 +248,24 @@ public class PhotoFragment extends Fragment {
                 .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    // Handle the fetched data
-                    List<UserDailyRecord> records = queryDocumentSnapshots.toObjects(UserDailyRecord.class);
-                    updateRecyclerView(records);
+                    if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                        List<UserDailyRecord> records = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                            UserDailyRecord record = documentSnapshot.toObject(UserDailyRecord.class);
+                            if (record != null && record.getPhotoUrls() != null && !record.getPhotoUrls().isEmpty()) {
+                                records.add(record);
+                            }
+                        }
+                        updateRecyclerView(records);
+                    } else {
+                        updateRecyclerView(new ArrayList<>()); // Pass an empty list to clear the adapter
+                    }
                 })
                 .addOnFailureListener(e -> {
                     // Handle the error
                 });
+
+
     }
 
 
@@ -262,9 +273,10 @@ public class PhotoFragment extends Fragment {
 //        for (UserDailyRecord record : records) {
 //            Log.e("PhotoFragment", "Record: " + record.toString());
 //        }
-        datesAdapter.setRecords(records); // Update the adapter's data
-        datesAdapter.notifyDataSetChanged(); // Notify the adapter of the dataset change
-
+        if (records != null){
+            datesAdapter.setRecords(records); // Update the adapter's data
+            datesAdapter.notifyDataSetChanged(); // Notify the adapter of the dataset change
+        }
     }
 
 }

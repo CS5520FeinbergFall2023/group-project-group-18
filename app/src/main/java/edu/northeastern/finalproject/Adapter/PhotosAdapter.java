@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.northeastern.finalproject.R;
@@ -19,6 +20,15 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
     public PhotosAdapter(List<String> photoUrls) {
         this.photoUrls = photoUrls;
+    }
+
+    public void setPhotoUrls(List<String> newPhotoUrls) {
+        if (newPhotoUrls != null) {
+            this.photoUrls = newPhotoUrls;
+        } else {
+            this.photoUrls.clear(); // Clear the list instead of setting it to null
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -36,7 +46,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
     @Override
     public int getItemCount() {
-        return photoUrls.size();
+        return (photoUrls != null) ? photoUrls.size() : 0;
     }
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder {
