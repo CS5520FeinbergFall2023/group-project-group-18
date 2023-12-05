@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.haibin.calendarview.MonthView;
@@ -24,6 +26,8 @@ public class CustomMonthView extends MonthView {
     private int mRadius;
     private List<MoodData> moodDataList;
 
+    private FirebaseAuth mAuth = com.google.firebase.auth.FirebaseAuth.getInstance();
+
     public CustomMonthView(Context context) {
 
         super(context);
@@ -35,7 +39,16 @@ public class CustomMonthView extends MonthView {
         moodDataList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        String email;
+        if (currentUser != null) {
+            email = currentUser.getEmail();
+        } else {
+            email = null;
+        }
         db.collection("moods")
+                .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
@@ -52,10 +65,11 @@ public class CustomMonthView extends MonthView {
                         }
                         String dayOfWeek = document.getString("dayOfWeek");
 
-                        MoodData moodData = new MoodData(moodValue, date, dayOfWeek);
+                        MoodData moodData = new MoodData(email, moodValue, date, dayOfWeek);
                         moodDataList.add(moodData);
+                        //System.out.println(moodData);
                     }
-
+                    //System.out.println("list size: " + moodDataList.size());
                     invalidate();
                 })
                 .addOnFailureListener(e -> {

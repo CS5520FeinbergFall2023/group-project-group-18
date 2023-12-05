@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.haibin.calendarview.Calendar;
@@ -23,6 +25,7 @@ public class CustomWeekView extends WeekView {
     private Paint mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mSchemeBasicPaint = new Paint();
     private List<MoodData> moodDataList;
+    private FirebaseAuth mAuth = com.google.firebase.auth.FirebaseAuth.getInstance();
 
 
     public CustomWeekView(Context context) {
@@ -45,7 +48,16 @@ public class CustomWeekView extends WeekView {
         moodDataList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String email;
+        if (currentUser != null) {
+            email = currentUser.getEmail();
+        } else {
+            email = null;
+        }
+
         db.collection("moods")
+                .whereEqualTo("email", email)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
@@ -62,11 +74,10 @@ public class CustomWeekView extends WeekView {
                         }
                         String dayOfWeek = document.getString("dayOfWeek");
 
-                        MoodData moodData = new MoodData(moodValue, date, dayOfWeek);
+                        MoodData moodData = new MoodData(email, moodValue, date, dayOfWeek);
                         moodDataList.add(moodData);
+//                        System.out.println(moodDataList.size());
                     }
-                    // System.out.println(moodDataList.get(0));
-                    invalidate();
                 })
                 .addOnFailureListener(e -> {
                     System.out.println("fetch data failure");
