@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,7 +20,7 @@ public class DatesAdapter extends RecyclerView.Adapter<DatesAdapter.DateViewHold
     private List<UserDailyRecord> records;
 
     public DatesAdapter(List<UserDailyRecord> records) {
-        this.records = records;
+        this.records =  new ArrayList<>();
     }
 
     @Override
@@ -40,7 +41,7 @@ public class DatesAdapter extends RecyclerView.Adapter<DatesAdapter.DateViewHold
         return records.size();
     }
     public void setRecords(List<UserDailyRecord> records) {
-        this.records = records;
+        this.records = records != null ? records : new ArrayList<>();
     }
     public static class DateViewHolder extends RecyclerView.ViewHolder {
 
