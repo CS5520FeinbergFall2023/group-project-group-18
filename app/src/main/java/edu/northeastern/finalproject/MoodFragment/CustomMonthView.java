@@ -3,17 +3,65 @@ package edu.northeastern.finalproject.MoodFragment;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.haibin.calendarview.MonthView;
 import com.haibin.calendarview.Calendar;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 public class CustomMonthView extends MonthView {
 
     private int mRadius;
+    private List<MoodData> moodDataList;
 
     public CustomMonthView(Context context) {
+
         super(context);
+        fetchMoodDataFromFirestore();
+        Log.d("CustomMonthView", "CustomMonthView instantiated");
+    }
+
+    private void fetchMoodDataFromFirestore() {
+        moodDataList = new ArrayList<>();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("moods")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        int moodValue = document.getLong("moodValue").intValue();
+                        String dateString = document.getString("date");
+                        Date date = null;
+                        if (dateString != null) {
+                            try {
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                date = sdf.parse(dateString);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        String dayOfWeek = document.getString("dayOfWeek");
+
+                        MoodData moodData = new MoodData(moodValue, date, dayOfWeek);
+                        moodDataList.add(moodData);
+                    }
+
+                    invalidate();
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("fetching data failure");
+                });
+
     }
 
     @Override
@@ -30,7 +78,14 @@ public class CustomMonthView extends MonthView {
     protected void onDrawScheme(Canvas canvas, Calendar calendar, int x, int y) {
         int cx = x + mItemWidth / 2;
         int cy = y + mItemHeight / 2;
-        canvas.drawCircle(cx, cy, mRadius, mSchemePaint);
+
+        // canvas.drawCircle(cx, cy, mRadius, mSchemePaint);
+        for (MoodData moodData : moodDataList) {
+            if (calendar.isCurrentMonth() && calendar.getDay() == moodData.getDayOfMonth()) {
+                canvas.drawCircle(cx, cy, mRadius, mSchemePaint);
+                break;
+            }
+        }
     }
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
