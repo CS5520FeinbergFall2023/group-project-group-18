@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -35,10 +36,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormatSymbols;
+import java.util.Map;
 
 import edu.northeastern.finalproject.Auth.LoginActivity;
 import edu.northeastern.finalproject.Auth.RegisterActivity;
 import edu.northeastern.finalproject.R;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 public class AddMoodFragment extends Fragment {
@@ -48,6 +54,8 @@ public class AddMoodFragment extends Fragment {
     private ImageView sideBar;
     private ImageView icStatusSignal;
     private TextView moodValueText;
+    private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
 
     public AddMoodFragment() {
         // Required empty public constructor
@@ -196,7 +204,28 @@ public class AddMoodFragment extends Fragment {
 
     }
 
+//    private void saveMoodValue(int moodValue) {
+//
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+//        String currentDate = dateFormat.format(calendar.getTime());
+//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+//        String dayOfWeekStr = new DateFormatSymbols().getWeekdays()[dayOfWeek];
+//
+//        SharedPreferences preferences = this.getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = preferences.edit();
+//
+//
+//        editor.putInt("MoodValue", moodValue);
+//        editor.putString("Date", currentDate);
+//        editor.putString("DayOfWeek", dayOfWeekStr);
+//        editor.apply();
+//
+//
+//        showSavedMoodData(currentDate, dayOfWeekStr, moodValue);
+//    }
     private void saveMoodValue(int moodValue) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -204,18 +233,20 @@ public class AddMoodFragment extends Fragment {
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         String dayOfWeekStr = new DateFormatSymbols().getWeekdays()[dayOfWeek];
 
-        SharedPreferences preferences = this.getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+        Map<String, Object> moodData = new HashMap<>();
+        moodData.put("moodValue", moodValue);
+        moodData.put("date", currentDate);
+        moodData.put("dayOfWeek", dayOfWeekStr);
 
-
-        editor.putInt("MoodValue", moodValue);
-        editor.putString("Date", currentDate);
-        editor.putString("DayOfWeek", dayOfWeekStr);
-        editor.apply();
-
-
-        showSavedMoodData(currentDate, dayOfWeekStr, moodValue);
-    }
+        db.collection("moods")
+                .add(moodData)
+                .addOnSuccessListener(documentReference -> {
+                    showSavedMoodData(currentDate, dayOfWeekStr, moodValue);
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("error when storing data");
+                });
+}
 
     private void showSavedMoodData(String date, String dayOfWeek, int moodValue) {
 
