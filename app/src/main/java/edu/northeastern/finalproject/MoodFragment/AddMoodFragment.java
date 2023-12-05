@@ -55,6 +55,7 @@ public class AddMoodFragment extends Fragment {
     private ImageView icStatusSignal;
     private TextView moodValueText;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 
     public AddMoodFragment() {
@@ -226,6 +227,12 @@ public class AddMoodFragment extends Fragment {
 //    }
     private void saveMoodValue(int moodValue) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        String email = null;
+        if (currentUser != null) {
+            email = currentUser.getEmail();
+        }
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -234,6 +241,7 @@ public class AddMoodFragment extends Fragment {
         String dayOfWeekStr = new DateFormatSymbols().getWeekdays()[dayOfWeek];
 
         Map<String, Object> moodData = new HashMap<>();
+        moodData.put("email", email);
         moodData.put("moodValue", moodValue);
         moodData.put("date", currentDate);
         moodData.put("dayOfWeek", dayOfWeekStr);
@@ -246,7 +254,7 @@ public class AddMoodFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     System.out.println("error when storing data");
                 });
-}
+    }
 
     private void showSavedMoodData(String date, String dayOfWeek, int moodValue) {
 

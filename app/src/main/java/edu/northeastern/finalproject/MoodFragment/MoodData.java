@@ -3,6 +3,7 @@ package edu.northeastern.finalproject.MoodFragment;
 import java.util.Date;
 
 public class MoodData {
+    private String email;
 
     private int moodValue;
     private Date date;
@@ -11,7 +12,8 @@ public class MoodData {
     public MoodData() {
     }
 
-    public MoodData(int moodValue, Date date, String dayOfWeek) {
+    public MoodData(String email, int moodValue, Date date, String dayOfWeek) {
+        this.email = email;
         this.moodValue = moodValue;
         this.date = date;
         this.dayOfWeek = dayOfWeek;
@@ -43,6 +45,10 @@ public class MoodData {
 
     public int getDayOfMonth() {
         return date.getMonth();
+    }
+
+    public String toString() {
+        return "email: " + email + "moodValue: " + moodValue + "date: " + date + "dayofweek: " + dayOfWeek;
     }
 }
 
