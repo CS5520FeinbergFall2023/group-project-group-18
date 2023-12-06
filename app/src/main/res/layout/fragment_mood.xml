@@ -183,4 +183,15 @@
         android:text="0"
         android:layout_marginRight="16dp"/>
 
+    <Button
+        android:id="@+id/enterDailyQuoteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/FrameSeekBar"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/mid"
+        android:text="Tap to Enter Today's Quote"
+        />
+
 </RelativeLayout>
