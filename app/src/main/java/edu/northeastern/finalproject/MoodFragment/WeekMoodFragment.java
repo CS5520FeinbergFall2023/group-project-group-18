@@ -1,7 +1,6 @@
 package edu.northeastern.finalproject.MoodFragment;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,6 +31,8 @@ public class WeekMoodFragment extends Fragment {
     private String userId;
     private View mRootView;
 
+    private TextView quoteTextView;
+
     public WeekMoodFragment() {
         // Required empty public constructor
     }
@@ -56,18 +57,21 @@ public class WeekMoodFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mRootView == null) {
             mRootView = inflater.inflate(R.layout.fragment_mood_week, container, false);
-            fetchMoodData();
+            fetchMoodAndQuote();
         }
         return mRootView;
     }
-    private void fetchMoodData() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private void fetchMoodAndQuote() {
+        Calendar today = Calendar.getInstance();
+        int todayIndex = today.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY; // Sunday is 0, Monday is 1, etc.
 
+        Calendar startOfWeek = (Calendar) today.clone();
+        startOfWeek.add(Calendar.DAY_OF_YEAR, -todayIndex); // Set to the start of the current week
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         for (int i = 0; i < 7; i++) {
-            // Use a separate calendar instance for each query
-            Calendar queryCalendar = (Calendar) calendar.clone();
-            queryCalendar.add(Calendar.DAY_OF_YEAR, -i); // Go back i days from today
+            Calendar queryCalendar = (Calendar) startOfWeek.clone();
+            queryCalendar.add(Calendar.DAY_OF_YEAR, i);
             Date date = queryCalendar.getTime();
             String formattedDate = dateFormat.format(date);
 
@@ -81,13 +85,48 @@ public class WeekMoodFragment extends Fragment {
             dailyRecordRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if (document != null && document.exists() && document.contains("mood")) {
-                        Integer moodValue = document.getLong("mood").intValue();
-                        updateMoodColorForDay(dayIndex, moodValue);
+                    if (document != null && document.exists()) {
+                        if (document.contains("mood")) {
+                            Integer moodValue = document.getLong("mood").intValue();
+                            updateMoodColorForDay(dayIndex, moodValue);
+                        }
+                        if (document.contains("dailyQuote")) {
+                            String quote = document.getString("dailyQuote");
+                            updateQuoteForDay(dayIndex, quote);
+                        }
                     }
                 }
             });
         }
+    }
+
+    private void updateQuoteForDay(int dayIndex, String quote) {
+        switch (dayIndex) {
+            case 0:
+                quoteTextView = mRootView.findViewById(R.id.calendarViewWeek_quoteSunday);
+                break;
+            case 1:
+                quoteTextView = mRootView.findViewById(R.id.calendarViewWeek_quoteMonday);
+                break;
+            case 2:
+                quoteTextView = mRootView.findViewById(R.id.calendarViewWeek_quoteTuesday);
+                break;
+            case 3:
+                quoteTextView = mRootView.findViewById(R.id.calendarViewWeek_quoteWednesday);
+                break;
+            case 4:
+                quoteTextView = mRootView.findViewById(R.id.calendarViewWeek_quoteThursday);
+                break;
+            case 5:
+                quoteTextView = mRootView.findViewById(R.id.calendarViewWeek_quoteFriday);
+                break;
+            case 6:
+                quoteTextView = mRootView.findViewById(R.id.calendarViewWeek_quoteSaturday);
+                break;
+            default:
+                return;
+        }
+        quoteTextView.setText(quote != null ? quote : ""); // Set the quote or leave it blank
     }
 
     private void updateMoodColorForDay(int dayIndex, int moodValue) {
@@ -122,7 +161,7 @@ public class WeekMoodFragment extends Fragment {
 
     private void setMoodColor(View colorDot, int moodValue) {
         if (moodValue >= 0 && moodValue <= 4) {
-            colorDot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.mood_blue)));
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.mood_blue))); // blue
         } else if (moodValue > 4 && moodValue <= 7) {
             colorDot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.mood_green))); // Green
         } else if (moodValue > 7 && moodValue <= 10) {
