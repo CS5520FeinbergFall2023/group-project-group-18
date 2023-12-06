@@ -87,8 +87,11 @@ public class WeekMoodFragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document != null && document.exists()) {
                         if (document.contains("mood")) {
-                            Integer moodValue = document.getLong("mood").intValue();
-                            updateMoodColorForDay(dayIndex, moodValue);
+                            Long moodLong = document.getLong("mood");
+                            if (moodLong != null) {
+                                Integer moodValue = moodLong.intValue();
+                                updateMoodColorForDay(dayIndex, moodValue);
+                            }
                         }
                         if (document.contains("dailyQuote")) {
                             String quote = document.getString("dailyQuote");
