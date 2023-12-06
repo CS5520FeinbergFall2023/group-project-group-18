@@ -360,14 +360,14 @@ public class AddMoodFragment extends Fragment {
                         moodValueText.setText(String.valueOf(mood));
                     } else {
                         // Handle the case where mood is null or not present
-                        moodSeekBar.setProgress(10); // Default value
-                        moodValueText.setText("10");
+                        moodSeekBar.setProgress(0); // Default value
+                        moodValueText.setText("0");
                         Toast.makeText(getContext(),"You have not track your mood today~", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     // Document does not exist
-                    moodSeekBar.setProgress(10); // Default value
-                    moodValueText.setText("10");
+                    moodSeekBar.setProgress(0); // Default value
+                    moodValueText.setText("0");
                 }
             } else {
                 // Handle the error
