@@ -253,18 +253,10 @@ public class AddMoodFragment extends Fragment {
     private void saveMoodValue(int moodValue) {
         firebaseFirestore = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
+        String currentDate = getCurrentDate();
 
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            Date currentDate = new Date(); // Get current Date object
-
-            // Create an instance of UserDailyRecord
-            UserDailyRecord record = new UserDailyRecord();
-            record.setUserId(userId); // Set the userId
-            record.setDate(currentDate); // Set the date
-            record.setMood(moodValue); // Set the mood value
-            // Assuming steps and heartRate are not required for this operation,
-            // otherwise set them as well.
 
             DocumentReference dailyRecordRef = firebaseFirestore
                     .collection("users")
@@ -272,18 +264,42 @@ public class AddMoodFragment extends Fragment {
                     .collection("dailyRecords")
                     .document(getCurrentDate());
 
-            // Save the UserDailyRecord instance to Firestore
-            dailyRecordRef.set(record, SetOptions.merge())
-                    .addOnSuccessListener(aVoid -> {
-                        try {
-                            showSavedMoodData(getCurrentDate(), moodValue);
-                        } catch (java.text.ParseException e) {
-                            e.printStackTrace();
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.w("Firestore", "Error when storing mood data", e);
-                    });
+            // Check if a record already exists
+            dailyRecordRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        // Record exists, update only the mood
+                        dailyRecordRef.update("mood", moodValue)
+                                .addOnSuccessListener(aVoid -> {
+                                    try {
+                                        showSavedMoodData(currentDate, moodValue);
+                                    } catch (java.text.ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error when updating mood data", e));
+                    } else {
+                        // No record for this day, create a new one
+                        UserDailyRecord record = new UserDailyRecord();
+                        record.setUserId(userId);
+                        record.setDate(new Date()); // Set the current date
+                        record.setMood(moodValue);
+
+                        dailyRecordRef.set(record)
+                                .addOnSuccessListener(aVoid -> {
+                                    try {
+                                        showSavedMoodData(currentDate, moodValue);
+                                    } catch (java.text.ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.w("Firestore", "Error when storing new mood data", e));
+                    }
+                } else {
+                    Log.e("Firestore", "Error getting document", task.getException());
+                }
+            });
         }
     }
 
