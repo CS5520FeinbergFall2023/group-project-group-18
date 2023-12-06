@@ -2,8 +2,10 @@ package edu.northeastern.finalproject.MoodFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -137,6 +139,7 @@ public class AddMoodFragment extends Fragment {
                 showPopupMenu(v);
             }
         });
+        displayCachedMood();
 
         String userId = FirebaseUtil.getAuth().getCurrentUser().getUid();
 
@@ -285,6 +288,11 @@ public class AddMoodFragment extends Fragment {
 //        showSavedMoodData(currentDate, dayOfWeekStr, moodValue);
 //    }
     private void saveMoodValue(int moodValue) {
+        SharedPreferences preferences = getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("LastMoodValue", moodValue);
+        editor.apply();
+
         firebaseFirestore = FirebaseFirestore.getInstance();
         String currentDate = getCurrentDate();
 
@@ -348,6 +356,9 @@ public class AddMoodFragment extends Fragment {
     }
 
     private void getTodayMood(DocumentReference dailyRecordRef){
+        SharedPreferences preferences = getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);
+        int lastMoodValue = preferences.getInt("LastMoodValue", -1);
+
         dailyRecordRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 DocumentSnapshot document = task.getResult();
@@ -356,12 +367,15 @@ public class AddMoodFragment extends Fragment {
                     if (document.contains("mood") && document.get("mood") != null) {
                         int mood = document.getLong("mood").intValue(); // Cast to int if you're sure it's an integer
                         // Now you can use this mood value to update your UI
-                        moodSeekBar.setProgress(mood);
-                        moodValueText.setText(String.valueOf(mood));
+                        if (mood != lastMoodValue) {
+                            moodSeekBar.setProgress(mood);
+                            moodValueText.setText(String.valueOf(mood));
+                        }
                     } else {
-                        // Handle the case where mood is null or not present
-                        moodSeekBar.setProgress(0); // Default value
-                        moodValueText.setText("0");
+                        if (lastMoodValue != -1) {
+                            moodSeekBar.setProgress(0);
+                            moodValueText.setText("0");
+                        }
                         Toast.makeText(getContext(),"You have not track your mood today~", Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -440,5 +454,13 @@ public class AddMoodFragment extends Fragment {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
     }
+    private void displayCachedMood() {
+        SharedPreferences preferences = getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);
+        int lastMoodValue = preferences.getInt("LastMoodValue", -1); // Default value if not set
 
+        if (lastMoodValue != -1) {
+            moodSeekBar.setProgress(lastMoodValue);
+            moodValueText.setText(String.valueOf(lastMoodValue));
+        }
+    }
 }
