@@ -61,13 +61,16 @@ public class WeekMoodFragment extends Fragment {
         return mRootView;
     }
     private void fetchMoodData() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar today = Calendar.getInstance();
+        int todayIndex = today.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY; // Sunday is 0, Monday is 1, etc.
 
+        Calendar startOfWeek = (Calendar) today.clone();
+        startOfWeek.add(Calendar.DAY_OF_YEAR, -todayIndex); // Set to the start of the current week
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         for (int i = 0; i < 7; i++) {
-            // Use a separate calendar instance for each query
-            Calendar queryCalendar = (Calendar) calendar.clone();
-            queryCalendar.add(Calendar.DAY_OF_YEAR, -i); // Go back i days from today
+            Calendar queryCalendar = (Calendar) startOfWeek.clone();
+            queryCalendar.add(Calendar.DAY_OF_YEAR, i);
             Date date = queryCalendar.getTime();
             String formattedDate = dateFormat.format(date);
 
@@ -122,7 +125,7 @@ public class WeekMoodFragment extends Fragment {
 
     private void setMoodColor(View colorDot, int moodValue) {
         if (moodValue >= 0 && moodValue <= 4) {
-            colorDot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.mood_blue)));
+            colorDot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.mood_blue))); // blue
         } else if (moodValue > 4 && moodValue <= 7) {
             colorDot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.mood_green))); // Green
         } else if (moodValue > 7 && moodValue <= 10) {
