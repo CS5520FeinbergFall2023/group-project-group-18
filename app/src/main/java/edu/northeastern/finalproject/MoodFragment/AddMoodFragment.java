@@ -2,17 +2,15 @@ package edu.northeastern.finalproject.MoodFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import android.os.Bundle;
 
@@ -39,15 +36,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormatSymbols;
-import java.util.Map;
 
 import edu.northeastern.finalproject.Auth.LoginActivity;
-import edu.northeastern.finalproject.Auth.RegisterActivity;
 import edu.northeastern.finalproject.FirebaseUtil;
 import edu.northeastern.finalproject.R;
 import edu.northeastern.finalproject.data.UserDailyRecord;
@@ -55,11 +49,6 @@ import edu.northeastern.finalproject.data.UserDailyRecord;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-
-import org.w3c.dom.Document;
 
 
 public class AddMoodFragment extends Fragment {
@@ -371,14 +360,14 @@ public class AddMoodFragment extends Fragment {
                         moodValueText.setText(String.valueOf(mood));
                     } else {
                         // Handle the case where mood is null or not present
-                        moodSeekBar.setProgress(10); // Default value
-                        moodValueText.setText("10");
+                        moodSeekBar.setProgress(0); // Default value
+                        moodValueText.setText("0");
                         Toast.makeText(getContext(),"You have not track your mood today~", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     // Document does not exist
-                    moodSeekBar.setProgress(10); // Default value
-                    moodValueText.setText("10");
+                    moodSeekBar.setProgress(0); // Default value
+                    moodValueText.setText("0");
                 }
             } else {
                 // Handle the error
@@ -435,6 +424,20 @@ public class AddMoodFragment extends Fragment {
             });
         }else{
             Toast.makeText(getContext(), "Please log in", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
     }
 
