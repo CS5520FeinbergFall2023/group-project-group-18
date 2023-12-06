@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -66,10 +69,11 @@ public class AddMoodFragment extends Fragment {
     private ImageView sideBar;
     private ImageView icStatusSignal;
     private TextView moodValueText;
+    private Button enterDailyQuoteBtn;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-    private FirebaseUser currentUser;
+    private FirebaseUser currentUser = mAuth.getCurrentUser();
 
 
 
@@ -91,6 +95,7 @@ public class AddMoodFragment extends Fragment {
         moodImageBad = view.findViewById(R.id.moodImageBad);
         moodValueText = view.findViewById(R.id.moodValueText);
         icStatusSignal = view.findViewById(R.id.ic_status_signal);
+        enterDailyQuoteBtn = view.findViewById(R.id.enterDailyQuoteBtn);
 
         moodImageGood.setImageResource(R.drawable.ic_mood_good);
         moodImageAverage.setImageResource(R.drawable.ic_mood_average);
@@ -154,6 +159,46 @@ public class AddMoodFragment extends Fragment {
                 .document(currentDate);
 
         getTodayMood(dailyRecordRef);
+
+        enterDailyQuoteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Enter Today's Quote");
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String quote = input.getText().toString().trim();
+                        if (quote.length() <= 25) {
+                            saveQuote(quote);
+                        } else {
+                            Toast.makeText(getContext(), "Please limit the quote to 25 characters.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+
+                // Show the keyboard when the dialog is displayed
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+                dialog.show();
+
+                // Request focus on the EditText when the dialog shows up
+                input.requestFocus();
+            }
+        });
 
         return view;
     }
@@ -252,7 +297,6 @@ public class AddMoodFragment extends Fragment {
 //    }
     private void saveMoodValue(int moodValue) {
         firebaseFirestore = FirebaseFirestore.getInstance();
-        currentUser = mAuth.getCurrentUser();
         String currentDate = getCurrentDate();
 
         if (currentUser != null) {
@@ -353,4 +397,45 @@ public class AddMoodFragment extends Fragment {
             return "";
         }
     }
+
+    private void saveQuote(String quote) {
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            String currentDate = getCurrentDate();
+            DocumentReference dailyRecordRef = firebaseFirestore
+                    .collection("users")
+                    .document(userId)
+                    .collection("dailyRecords")
+                    .document(currentDate);
+
+            // Check if a record already exists
+            dailyRecordRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        // Record exists, update only the mood
+                        dailyRecordRef.update("dailyQuote", quote)
+                                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Quote updated successfully!", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error updating quote.", Toast.LENGTH_SHORT).show());
+
+                    } else {
+                        // No record for this day, create a new one
+                        UserDailyRecord record = new UserDailyRecord();
+                        record.setUserId(userId);
+                        record.setDate(new Date()); // Set the current date
+                        record.setDailyQuote(quote);
+
+                        dailyRecordRef.set(record)
+                                .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Quote saved successfully!", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error saving quote.", Toast.LENGTH_SHORT).show());
+                    }
+                } else {
+                    Log.e("Firestore", "Error getting document", task.getException());
+                }
+            });
+        }else{
+            Toast.makeText(getContext(), "Please log in", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

@@ -211,7 +211,7 @@ public class PhotoFragment extends Fragment {
                     // Daily record does not exist, create a new one with the photoUrl
                     List<String> photoUrls = new ArrayList<>();
                     photoUrls.add(photoUrl);
-                    UserDailyRecord newRecord = new UserDailyRecord(userId, date, null, photoUrls, 0, 0.0);
+                    UserDailyRecord newRecord = new UserDailyRecord(userId, date, null, photoUrls, 0, 0.0, null);
                     dailyRecordRef.set(newRecord)
                             .addOnSuccessListener(aVoid -> fetchUserPhotos())
                             .addOnFailureListener(e -> Log.e("PhotoFragment", "Error creating Firestore document", e));
