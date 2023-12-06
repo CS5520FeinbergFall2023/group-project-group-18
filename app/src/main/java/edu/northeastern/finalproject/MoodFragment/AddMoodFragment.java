@@ -2,17 +2,14 @@ package edu.northeastern.finalproject.MoodFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -24,7 +21,6 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import android.os.Bundle;
 
@@ -39,15 +35,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormatSymbols;
-import java.util.Map;
 
 import edu.northeastern.finalproject.Auth.LoginActivity;
-import edu.northeastern.finalproject.Auth.RegisterActivity;
 import edu.northeastern.finalproject.FirebaseUtil;
 import edu.northeastern.finalproject.R;
 import edu.northeastern.finalproject.data.UserDailyRecord;
@@ -55,11 +48,6 @@ import edu.northeastern.finalproject.data.UserDailyRecord;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-
-import org.w3c.dom.Document;
 
 
 public class AddMoodFragment extends Fragment {
