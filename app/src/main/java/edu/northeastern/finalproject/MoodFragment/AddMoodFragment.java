@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.InputType;
@@ -423,6 +424,20 @@ public class AddMoodFragment extends Fragment {
             });
         }else{
             Toast.makeText(getContext(), "Please log in", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         }
     }
 
