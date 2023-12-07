@@ -35,13 +35,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         int leftPosition = position * 2;
         int rightPosition = position * 2 + 1;
-        int randomColor = generateRandomColor();
+//        int randomColor = generateRandomColor();
 
         if (leftPosition < posts.size()) {
             Post leftPost = posts.get(leftPosition);
             holder.tvPostContent1.setText(leftPost.getContent());
             holder.tvUserName1.setText(leftPost.getUserName());
-            holder.cardView1.setCardBackgroundColor(randomColor);
+//            holder.cardView1.setCardBackgroundColor(randomColor);
 
         }
 
@@ -49,19 +49,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             Post rightPost = posts.get(rightPosition);
             holder.tvPostContent2.setText(rightPost.getContent());
             holder.tvUserName2.setText(rightPost.getUserName());
-            holder.cardView2.setCardBackgroundColor(randomColor);
+//            holder.cardView2.setCardBackgroundColor(randomColor);
 
         }
     }
 
-    private int generateRandomColor() {
-        Random random = new Random();
-        int alpha = 128;
-        int r = random.nextInt(150) + 50;
-        int g = random.nextInt(150) + 50;
-        int b = random.nextInt(150) + 50;
-        return Color.argb(alpha, r, g, b);
-    }
+//    private int generateRandomColor() {
+//        Random random = new Random();
+//        int alpha = 128;
+//        int r = random.nextInt(150) + 50;
+//        int g = random.nextInt(150) + 50;
+//        int b = random.nextInt(150) + 50;
+//        return Color.argb(alpha, r, g, b);
+//    }
 
     @Override
     public int getItemCount() {
