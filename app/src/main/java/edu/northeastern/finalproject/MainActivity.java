@@ -12,9 +12,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 import edu.northeastern.finalproject.Auth.LoginActivity;
+import edu.northeastern.finalproject.RecordFragment.StepCounter;
 import edu.northeastern.finalproject.communityFragment.CommunityFragment;
-import edu.northeastern.finalproject.databinding.ActivityMainBinding;
 import edu.northeastern.finalproject.MoodFragment.AddMoodFragment;
+import edu.northeastern.finalproject.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             if(item.getItemId() == R.id.mood) {
                 transaction.replace(R.id.fragment_container, new AddMoodFragment());
             } else if (item.getItemId() == R.id.record) {
-                transaction.replace(R.id.fragment_container, new RecordFragment());
+                transaction.replace(R.id.fragment_container, new StepCounter());
             } else if (item.getItemId() == R.id.community) {
                 transaction.replace(R.id.fragment_container, new CommunityFragment());
             } else if (item.getItemId() == R.id.photo){
