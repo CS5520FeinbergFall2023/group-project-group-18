@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-    <!-- TODO: Update Month Mood fragment layout -->
     <TextView
         android:id="@+id/yourWeekText"
         android:layout_width="wrap_content"
@@ -22,6 +21,21 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
+        <ImageView
+            android:id="@+id/ic_status_signal"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_status_signal"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"/>
+
+        <ImageView
+            android:id="@+id/ic_calender"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_calender_24"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
     <View
         android:id="@+id/WeekTextSplit"
         android:layout_width="match_parent"
@@ -79,7 +93,6 @@
                         android:id="@+id/calendarViewWeek_quoteSunday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quote 1"
                         android:layout_marginStart="16dp" />
                 </LinearLayout>
 
@@ -106,7 +119,6 @@
                         android:id="@+id/calendarViewWeek_quoteMonday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quote 2"
                         android:layout_marginStart="16dp" />
                 </LinearLayout>
 
@@ -134,7 +146,6 @@
                         android:id="@+id/calendarViewWeek_quoteTuesday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quote 3"
                         android:layout_marginStart="16dp" />
                 </LinearLayout>
 
@@ -161,7 +172,6 @@
                         android:id="@+id/calendarViewWeek_quoteWednesday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quote 4"
                         android:layout_marginStart="16dp" />
                 </LinearLayout>
 
@@ -188,7 +198,6 @@
                         android:id="@+id/calendarViewWeek_quoteThursday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quote 5"
                         android:layout_marginStart="16dp" />
                 </LinearLayout>
 
@@ -216,7 +225,6 @@
                         android:id="@+id/calendarViewWeek_quoteFriday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quote 6"
                         android:layout_marginStart="16dp" />
                 </LinearLayout>
 
@@ -244,7 +252,6 @@
                         android:id="@+id/calendarViewWeek_quoteSaturday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quote 7"
                         android:layout_marginStart="16dp" />
                 </LinearLayout>
 

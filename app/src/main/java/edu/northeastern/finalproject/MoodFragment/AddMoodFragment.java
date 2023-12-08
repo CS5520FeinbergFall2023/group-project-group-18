@@ -234,9 +234,19 @@ public class AddMoodFragment extends Fragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_sidebar);
 
+        LinearLayout dailyLayout = dialog.findViewById(R.id.layoutDaily);
         LinearLayout weekLayout = dialog.findViewById(R.id.layoutWeek);
         LinearLayout monthLayout = dialog.findViewById(R.id.layoutMonth);
-
+        dailyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_container, new AddMoodFragment());
+                transaction.commit();
+                dialog.dismiss();
+            }
+        });
         weekLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
