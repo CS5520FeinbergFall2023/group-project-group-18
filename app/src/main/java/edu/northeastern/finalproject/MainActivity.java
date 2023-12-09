@@ -1,6 +1,7 @@
 package edu.northeastern.finalproject;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
          checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 
         setContentView(binding.getRoot());
 
@@ -79,6 +81,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Handle the configuration change if needed
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // 处理横向方向
+            setContentView(R.layout.test);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // 处理纵向方向
+            setContentView(R.layout.activity_main);
+        }
+
+        transaction.commit();
     }
 }
