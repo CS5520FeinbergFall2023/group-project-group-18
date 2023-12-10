@@ -51,7 +51,7 @@ public class CommunityFragment extends Fragment {
 
         postList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recyclerViewPosts);
-        postAdapter = new PostAdapter(postList);
+        postAdapter = new PostAdapter(postList, getContext());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -78,7 +78,7 @@ public class CommunityFragment extends Fragment {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Post post = documentSnapshot.toObject(Post.class);
                             postList.add(post);
-                            System.out.println(post + "from line 81 in comuunity frament ");
+                            // System.out.println(post + "from line 81 in comuunity frament ");
                         }
                         postAdapter.notifyDataSetChanged();
                     }

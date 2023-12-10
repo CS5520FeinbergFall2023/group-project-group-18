@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.northeastern.finalproject.R;
@@ -80,7 +81,8 @@ public class PostCommunityFragment extends DialogFragment {
     // Save the post to Firestore
     private void savePostToFirestore(String username, String userPost) {
         Post post = new Post(username, userPost);
-
+        String postId = db.collection("posts").document().getId();
+        post.setPostId(postId);
         db.collection("posts")
                 .add(post)
                 .addOnCompleteListener(new OnCompleteListener() {
