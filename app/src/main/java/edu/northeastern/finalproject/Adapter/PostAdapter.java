@@ -101,6 +101,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             cardView1 = itemView.findViewById(R.id.cardView1);
             tvPostContent1 = itemView.findViewById(R.id.editTextPost1);
             tvUserName1 = itemView.findViewById(R.id.usernameTextView1);
+            recyclerViewComments = itemView.findViewById(R.id.recyclerViewComments);
         }
     }
 

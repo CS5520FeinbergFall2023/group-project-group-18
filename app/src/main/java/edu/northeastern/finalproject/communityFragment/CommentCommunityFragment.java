@@ -13,10 +13,14 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.northeastern.finalproject.R;
@@ -51,7 +55,7 @@ public class CommentCommunityFragment extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     String commentContent = etComment.getText().toString();
-                    updatePostCommentsInFirestore(postId, commentContent);
+                    updateDocumentCommentsInFirestore(postId, commentContent);
                     dismiss();
                 }
             });
@@ -60,29 +64,16 @@ public class CommentCommunityFragment extends DialogFragment {
         return view;
     }
 
-//    private void addCommentToPost(int position, String commentContent) {
-//        Post post = postList.get(position);
-//
-//        Comment comment = new Comment("", commentContent);
-//
-//        post.addComment(comment);
-//
-//        updatePostCommentsInFirestore(post);
-//    }
+    private void updateDocumentCommentsInFirestore(String postId, String commentContent) {
 
-    private void updatePostCommentsInFirestore(String postId, String commentContent) {
-        Map<String, Object> commentData = new HashMap<>();
-        // TODO modify current username
-        commentData.put("commenterName", "CURRENT USERNAME");
-        commentData.put("commentContent", commentContent);
+        Comment comment = new Comment("CURRENT USERNAME", commentContent);
 
-        db.collection("posts")
-                .document(postId)
-                .collection("comments")
-                .add(commentData)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        DocumentReference postRef = db.collection("posts").document(postId);
+
+        postRef.update("comments", FieldValue.arrayUnion(comment))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             System.out.println("Add comment successfully");
                         } else {
@@ -92,3 +83,11 @@ public class CommentCommunityFragment extends DialogFragment {
                 });
     }
 }
+
+
+
+
+
+
+
+
