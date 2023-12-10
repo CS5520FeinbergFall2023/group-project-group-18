@@ -19,15 +19,17 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Auth.RegisterActivity"/>
-        <activity android:name=".Auth.LoginActivity"/>
+        <activity android:name=".Auth.RegisterActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity android:name=".Auth.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="edu.northeastern.finalproject.fileprovider"

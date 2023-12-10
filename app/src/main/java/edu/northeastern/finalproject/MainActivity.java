@@ -1,7 +1,11 @@
 package edu.northeastern.finalproject;
 
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
+
+import android.content.pm.ActivityInfo;
+
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +21,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 import edu.northeastern.finalproject.Auth.LoginActivity;
+import edu.northeastern.finalproject.RecordFragment.StepCounter;
 import edu.northeastern.finalproject.communityFragment.CommunityFragment;
-import edu.northeastern.finalproject.databinding.ActivityMainBinding;
 import edu.northeastern.finalproject.MoodFragment.AddMoodFragment;
+import edu.northeastern.finalproject.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 
         setContentView(binding.getRoot());
 
@@ -47,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             if(item.getItemId() == R.id.mood) {
                 transaction.replace(R.id.fragment_container, new AddMoodFragment());
             } else if (item.getItemId() == R.id.record) {
-                transaction.replace(R.id.fragment_container, new RecordFragment());
+                transaction.replace(R.id.fragment_container, new StepCounter());
             } else if (item.getItemId() == R.id.community) {
                 transaction.replace(R.id.fragment_container, new CommunityFragment());
             } else if (item.getItemId() == R.id.photo){
@@ -86,7 +92,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        // Handle the configuration change if needed
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // 处理横向方向
+            setContentView(R.layout.test);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // 处理纵向方向
+            setContentView(R.layout.activity_main);
+        }
+
+        transaction.commit();
     }
 
     public void getNotificationPermission(){

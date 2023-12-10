@@ -1,4 +1,4 @@
-package edu.northeastern.finalproject;
+package edu.northeastern.finalproject.RecordFragment;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -13,18 +13,21 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.Manifest;
 
-public class RecordFragment extends Fragment implements SensorEventListener {
+import edu.northeastern.finalproject.R;
+
+public class StepCounter extends Fragment implements SensorEventListener {
     private static final int REQUEST_ACTIVITY_RECOGNITION_PERMISSION = 1;
 
     private SensorManager mSensorManager = null;
@@ -33,21 +36,23 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private int previewTotalSteps = 0;
     private TextView steps;
     private TextView warning;
+    private ImageView heartRate;
 
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
 
-    public RecordFragment() {
+    public StepCounter() {
         // Required empty public constructor
     }
 
-    public static RecordFragment newInstance() {
-        return new RecordFragment();
+    public static StepCounter newInstance() {
+        return new StepCounter();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 initSensor();
@@ -70,9 +75,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_record,container,false);
+        View view = inflater.inflate(R.layout.fragment_step_counter,container,false);
         steps = view.findViewById(R.id.steps);
         warning = view.findViewById(R.id.warning);
+        heartRate = view.findViewById(R.id.heartRateImage);
 
         loadData();
 
@@ -84,6 +90,16 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         } else {
             initSensor();
         }
+
+        heartRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_container, new HeartRate());
+                transaction.commit();
+            }
+        });
 
         return view;
     }
