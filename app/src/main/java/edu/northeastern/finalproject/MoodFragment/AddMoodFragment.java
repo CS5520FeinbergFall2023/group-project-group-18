@@ -1,7 +1,11 @@
 package edu.northeastern.finalproject.MoodFragment;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +32,7 @@ import java.util.Date;
 import java.util.Locale;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
 import androidx.core.net.ParseException;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -195,6 +201,7 @@ public class AddMoodFragment extends Fragment {
             }
         });
 
+        scheduleDailyMoodCheck();
         return view;
     }
 
@@ -217,20 +224,6 @@ public class AddMoodFragment extends Fragment {
         startActivity(intent);
         getActivity().finish();
     }
-//    private void checkLoginStatus() {
-//        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//        if (currentUser == null) {
-//            // User is not logged in, start LoginActivity
-//            Context context = getContext();
-//            if (context != null) {
-//                Intent intent = new Intent(context, LoginActivity.class);
-//                context.startActivity(intent);
-//                if (getActivity() != null) {
-//                    getActivity().finish(); // Close the current Fragment's hosting Activity
-//                }
-//            }
-//        }
-//    }
 
     private void showDialog() {
         final Dialog dialog = new Dialog(getActivity());
@@ -280,26 +273,6 @@ public class AddMoodFragment extends Fragment {
 
     }
 
-//    private void saveMoodValue(int moodValue) {
-//
-//        Calendar calendar = Calendar.getInstance();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-//        String currentDate = dateFormat.format(calendar.getTime());
-//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-//        String dayOfWeekStr = new DateFormatSymbols().getWeekdays()[dayOfWeek];
-//
-//        SharedPreferences preferences = this.getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//
-//
-//        editor.putInt("MoodValue", moodValue);
-//        editor.putString("Date", currentDate);
-//        editor.putString("DayOfWeek", dayOfWeekStr);
-//        editor.apply();
-//
-//
-//        showSavedMoodData(currentDate, dayOfWeekStr, moodValue);
-//    }
     private void saveMoodValue(int moodValue) {
         SharedPreferences preferences = getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -350,6 +323,7 @@ public class AddMoodFragment extends Fragment {
                                 })
                                 .addOnFailureListener(e -> Log.w("Firestore", "Error when storing new mood data", e));
                     }
+                    scheduleQuoteUploadReminder();
                 } else {
                     Log.e("Firestore", "Error getting document", task.getException());
                 }
@@ -444,6 +418,7 @@ public class AddMoodFragment extends Fragment {
                         dailyRecordRef.set(record)
                                 .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Quote saved successfully!", Toast.LENGTH_SHORT).show())
                                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Error saving quote.", Toast.LENGTH_SHORT).show());
+
                     }
                 } else {
                     Log.e("Firestore", "Error getting document", task.getException());
@@ -475,5 +450,40 @@ public class AddMoodFragment extends Fragment {
             moodSeekBar.setProgress(lastMoodValue);
             moodValueText.setText(String.valueOf(lastMoodValue));
         }
+    }
+
+    private void scheduleDailyMoodCheck() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 20); // Example: 8 PM
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        Intent intent = new Intent(getContext(), MoodCheckReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+    }
+    private void scheduleQuoteUploadReminder() {
+        NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "quote_reminder_channel";
+        CharSequence channelName = "Quote Reminder Notifications";
+
+        // Create a notification channel for Android 8.0 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel( channelId,channelName, NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), channelId)
+                .setSmallIcon(R.drawable.ic_launcher_mindharbor_foreground)
+                .setContentTitle("QuoteUpload Reminder")
+                .setContentText("Don't forget to upload your quote today!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        notificationManager.notify(2, builder.build());
     }
 }

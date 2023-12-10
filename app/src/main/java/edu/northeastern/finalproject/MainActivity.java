@@ -1,10 +1,18 @@
 package edu.northeastern.finalproject;
 
 import android.content.Intent;
+
+import android.content.pm.PackageManager;
+
 import android.content.pm.ActivityInfo;
+
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -22,11 +30,13 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
 
+    final int PERMISSION_REQUEST_CODE =112;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-         checkUserLogin();
+        checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
@@ -54,10 +64,11 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-
-//        if (savedInstanceState == null) {
-//            binding.bottomNavigationView.setSelectedItemId(R.id.mood);
-//        }
+        if (Build.VERSION.SDK_INT > 32) {
+            if (!shouldShowRequestPermissionRationale("112")){
+                getNotificationPermission();
+            }
+        }
     }
     private void checkUserLogin() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -94,4 +105,41 @@ public class MainActivity extends AppCompatActivity {
 
         transaction.commit();
     }
+
+    public void getNotificationPermission(){
+        try {
+            if (Build.VERSION.SDK_INT > 32) {
+                String permission = "android.permission.POST_NOTIFICATIONS";
+
+                int permCode = 42; // some integer request code
+
+                requestPermissions(new String[]{permission}, permCode);
+                ActivityCompat.requestPermissions(this,
+                        new String[]{permission},
+                        PERMISSION_REQUEST_CODE);
+            }
+        }catch (Exception e){
+
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // allow
+
+                }  else {
+                    //deny
+                }
+                return;
+
+        }
+
+    }
+
 }
