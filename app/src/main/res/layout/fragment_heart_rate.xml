@@ -27,21 +27,11 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="20dp"/>
 
-    <TextView
-        android:id="@+id/warning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Click to record"
-        android:layout_below="@id/counterLayout"
-        android:layout_centerHorizontal="true"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
     <RelativeLayout
         android:id="@+id/counterLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_above="@id/confirmButton"
         android:layout_centerHorizontal="true">
 
         <View
@@ -62,6 +52,22 @@
 
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="20dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/historyRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/confirmButton"/>
 
 
 </RelativeLayout>
