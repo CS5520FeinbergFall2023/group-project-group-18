@@ -44,7 +44,7 @@
         android:id="@+id/moodValueText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/FrameSeekBar"
+        android:layout_above="@id/FrameSeekBar"
         android:layout_centerHorizontal="true"
         android:textSize="25sp"
         android:textColor="#000000"
@@ -54,6 +54,7 @@
 
 
     <View
+        android:id="@+id/emptyView"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/light"
@@ -77,7 +78,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginBottom="50dp"
         android:max="10"
-        android:progress="10"
+        android:progress="0"
         android:progressDrawable="@drawable/custom_progress"
         android:rotation="270"
         android:thumb="@drawable/custom_thumb" />
@@ -181,5 +182,16 @@
         android:layout_alignBottom="@id/FrameSeekBar"
         android:text="0"
         android:layout_marginRight="16dp"/>
+
+    <Button
+        android:id="@+id/enterDailyQuoteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/FrameSeekBar"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/mid"
+        android:text="Tap to Enter Today's Quote"
+        />
 
 </RelativeLayout>

@@ -8,4 +8,9 @@
     <color name="mid">#8BADA8</color>
     <color name="light">#BAE1DB</color>
     <color name="lightest">#FFFFFF</color>
+
+    <!-- mood colors -->
+    <color name="mood_blue">#2196F3</color>
+    <color name="mood_green">#4CAF50</color>
+    <color name="mood_yellow">#FFEB3B</color>
 </resources>

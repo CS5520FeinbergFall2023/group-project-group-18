@@ -26,7 +26,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -34,10 +34,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+
+import edu.northeastern.finalproject.Adapter.DatesAdapter;
+import edu.northeastern.finalproject.data.UserDailyRecord;
 
 public class PhotoFragment extends Fragment {
     private Uri photoUri;
@@ -47,6 +48,8 @@ public class PhotoFragment extends Fragment {
     private ActivityResultLauncher<Intent> takePhotoLauncher;
     private ActivityResultLauncher<String> pickPhotoLauncher;
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
+
+    private DatesAdapter datesAdapter;
 
 
     public PhotoFragment() {
@@ -103,16 +106,18 @@ public class PhotoFragment extends Fragment {
         uploadPhotoBtn = view.findViewById(R.id.uploadPhotoBtn);
         datesRecyclerView = view.findViewById(R.id.datesRecyclerView);
 
-        setupRecyclerView();
+
         setupButtons();
+        setupRecyclerView();
+        fetchUserPhotos();
 
         return view;
     }
 
     private void setupRecyclerView() {
         datesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        // Initialize and set the adapter for datesRecyclerView
-        // For example: datesRecyclerView.setAdapter(new DatesAdapter(...));
+        datesAdapter = new DatesAdapter(new ArrayList<>()); // should set up adapter right after recyclerView
+        datesRecyclerView.setAdapter(datesAdapter);
     }
 
     private void setupButtons() {
@@ -137,7 +142,6 @@ public class PhotoFragment extends Fragment {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Log the error
                 Log.e("PhotoFragment", "Error occurred while creating the File", ex);
             }
             // Continue only if the File was successfully created
@@ -152,7 +156,6 @@ public class PhotoFragment extends Fragment {
     }
 
     private File createImageFile() throws IOException {
-        Log.e("1111", "createImageFile");
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -174,7 +177,6 @@ public class PhotoFragment extends Fragment {
     private void uploadPhotoToFirebase(Uri photoUri) {
         String userId = getUserId();
         if (userId == null) {
-            // Handle the case where the user ID is not available
             return;
         }
         StorageReference storageRef = FirebaseUtil.getStorage().getReference();
@@ -187,25 +189,35 @@ public class PhotoFragment extends Fragment {
         });
     }
     private void updatePhotoUrlInFirestore(String photoUrl, String userId) {
-        Log.e("2222","firestore");
-        DocumentReference userDocRef = FirebaseUtil.getFirestore().collection("users").document(userId);
+        String currentDate = getCurrentDate();
+        DocumentReference dailyRecordRef = FirebaseUtil.getFirestore()
+                .collection("users")
+                .document(userId)
+                .collection("dailyRecords")
+                .document(currentDate);
 
-        userDocRef.get().addOnCompleteListener(task -> {
+        // Get the current date as a java.util.Date object
+        Date date = new Date();
+
+        dailyRecordRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document != null && document.exists()) {
-                    // User document exists, update the photoUrls array
-                    userDocRef.update("photoUrls", FieldValue.arrayUnion(photoUrl));
+                    // Daily record exists, update the photoUrls array
+                    dailyRecordRef.update("photoUrls", FieldValue.arrayUnion(photoUrl))
+                            .addOnSuccessListener(aVoid -> fetchUserPhotos()) // only call fetchUserPhoto() after success, or the function might be called before database updates, then you might face new photo not show (asyn)
+                            .addOnFailureListener(e -> Log.e("PhotoFragment", "Error updating Firestore", e));
                 } else {
-                    // User document does not exist, create a new one with the photoUrl
-                    Map<String, Object> userData = new HashMap<>();
+                    // Daily record does not exist, create a new one with the photoUrl
                     List<String> photoUrls = new ArrayList<>();
                     photoUrls.add(photoUrl);
-                    userData.put("photoUrls", photoUrls);
-                    userDocRef.set(userData);
+                    UserDailyRecord newRecord = new UserDailyRecord(userId, date, null, photoUrls, 0, 0.0, null);
+                    dailyRecordRef.set(newRecord)
+                            .addOnSuccessListener(aVoid -> fetchUserPhotos())
+                            .addOnFailureListener(e -> Log.e("PhotoFragment", "Error creating Firestore document", e));
                 }
             } else {
-                Log.e("PhotoFragment", "Error getting user document", task.getException());
+                Log.e("PhotoFragment", "Error getting daily record", task.getException());
             }
         });
     }
@@ -222,6 +234,49 @@ public class PhotoFragment extends Fragment {
     private String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return dateFormat.format(new Date());
+    }
+
+    private void fetchUserPhotos() {
+        String userId = getUserId();
+        if (userId == null) {
+            // Handle not logged in user
+            return;
+        }
+
+        FirebaseUtil.getFirestore().collection("users").document(userId)
+                .collection("dailyRecords")
+                .orderBy("date", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                        List<UserDailyRecord> records = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                            UserDailyRecord record = documentSnapshot.toObject(UserDailyRecord.class);
+                            if (record != null && record.getPhotoUrls() != null && !record.getPhotoUrls().isEmpty()) {
+                                records.add(record);
+                            }
+                        }
+                        updateRecyclerView(records);
+                    } else {
+                        updateRecyclerView(new ArrayList<>()); // Pass an empty list to clear the adapter
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the error
+                });
+
+
+    }
+
+
+    private void updateRecyclerView(List<UserDailyRecord> records) {
+//        for (UserDailyRecord record : records) {
+//            Log.e("PhotoFragment", "Record: " + record.toString());
+//        }
+        if (records != null){
+            datesAdapter.setRecords(records); // Update the adapter's data
+            datesAdapter.notifyDataSetChanged(); // Notify the adapter of the dataset change
+        }
     }
 
 }

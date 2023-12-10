@@ -1,28 +1,41 @@
 package edu.northeastern.finalproject.data;
 
 import com.google.firebase.Timestamp;
+
+import java.util.Date;
 import java.util.List;
 
 public class UserDailyRecord {
     private String userId;
-    private Timestamp date;
+    private Date date;
     private Integer mood;
     private List<String> photoUrls; // URLs to photos in Firebase Storage
     private int steps;
     private double heartRate;
+
+    public String getDailyQuote() {
+        return dailyQuote;
+    }
+
+    public void setDailyQuote(String dailyQuote) {
+        this.dailyQuote = dailyQuote;
+    }
+
+    private String dailyQuote;
 
     // Default constructor is needed for Firestore's automatic data mapping
     public UserDailyRecord() {
     }
 
     // Constructor with parameters
-    public UserDailyRecord(String userId, Timestamp date, Integer mood, List<String> photoUrls, int steps, double heartRate) {
+    public UserDailyRecord(String userId, Date date, Integer mood, List<String> photoUrls, int steps, double heartRate, String dailyQuote) {
         this.userId = userId;
         this.date = date;
         this.mood = mood;
         this.photoUrls = photoUrls;
         this.steps = steps;
         this.heartRate = heartRate;
+        this.dailyQuote = dailyQuote;
     }
 
     // Getters and setters for each field for Firestore's automatic data mapping
@@ -34,11 +47,11 @@ public class UserDailyRecord {
         this.userId = userId;
     }
 
-    public Timestamp getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -72,5 +85,14 @@ public class UserDailyRecord {
 
     public void setHeartRate(double heartRate) {
         this.heartRate = heartRate;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDailyRecord{" +
+                "userId='" + userId + '\'' +
+                ", date=" + date +
+                ", photoUrls=" + photoUrls +
+                ", dailyQuote=" + dailyQuote;
     }
 }

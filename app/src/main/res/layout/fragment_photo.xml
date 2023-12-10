@@ -19,13 +19,16 @@
         android:text="Take Photo"
         app:layout_constraintStart_toStartOf="@id/leftGuideline"
         app:layout_constraintEnd_toStartOf="@+id/verticalCenterGuideline"
-        app:layout_constraintTop_toTopOf="@id/TopGuideline"/>
+        app:layout_constraintTop_toTopOf="@id/TopGuideline"
+        android:backgroundTint="@color/mid"
+        />
 
     <Button
         android:id="@+id/uploadPhotoBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Upload Photo"
+        android:backgroundTint="@color/mid"
         app:layout_constraintStart_toEndOf="@+id/verticalCenterGuideline"
         app:layout_constraintEnd_toEndOf="@id/rightGuideline"
         app:layout_constraintTop_toTopOf="@id/TopGuideline"/>
@@ -38,6 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/leftGuideline"
         app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+        android:layout_marginTop="10dp"
         android:scrollbars="vertical"/>
 
 

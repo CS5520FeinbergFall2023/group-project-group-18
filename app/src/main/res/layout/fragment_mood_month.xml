@@ -1,39 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp">
-
-    <!-- TODO: Update Month Mood fragment layout -->
-    <TextView
-        android:id="@+id/yourMonthText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Your Month"
-        android:textSize="28sp"
-        android:textColor="#0000FF"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
-
-    <View
-        android:id="@+id/MonthTextSplit"
+    android:fillViewport="true">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#0000FF"
-        android:layout_alignBottom="@id/yourMonthText"
-        android:layout_marginTop="4dp"/>
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:padding="16dp">
 
-    <com.haibin.calendarview.CalendarView
-        android:id="@+id/calendarViewMonth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/MonthTextSplit"
-        android:layout_marginTop="16dp"
-        app:month_view="edu.northeastern.finalproject.MoodFragment.CustomMonthView"
-        app:month_view_show_mode="mode_only_current"
-        tools:ignore="MissingClass" />
+        <ImageView
+            android:id="@+id/ic_status_signal"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_status_signal"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"/>
+
+        <ImageView
+            android:id="@+id/ic_calender"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_calender_24"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/yourMonthText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Month"
+            android:textSize="28sp"
+            android:textColor="#0000FF"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+
+        <View
+            android:id="@+id/MonthTextSplit"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#0000FF"
+            android:layout_alignBottom="@id/yourMonthText"
+            android:layout_marginTop="4dp"/>
+
+        <com.haibin.calendarview.CalendarView
+            android:id="@+id/calendarViewMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/MonthTextSplit"
+            android:layout_marginTop="16dp"
+            app:month_view="edu.northeastern.finalproject.MoodFragment.CustomMonthView"
+            app:month_view_show_mode="mode_only_current"
+            tools:ignore="MissingClass" />
 
 
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

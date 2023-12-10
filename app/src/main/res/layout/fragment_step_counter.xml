@@ -3,16 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RecordFragment">
+    tools:context=".RecordFragment.StepCounter">
 
-    <!-- TODO: Update blank fragment layout -->
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Step Counter"
-        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:textSize="20sp"
-        android:textFontWeight="800"/>
+        android:textFontWeight="800"
+        android:layout_alignParentStart="true"/>
+
+    <ImageView
+        android:id="@+id/heartRateImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_heart_rate_24"
+        android:onClick="onImageClick"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start your step count"
+        android:layout_below="@id/counterLayout"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
     <RelativeLayout
         android:id="@+id/counterLayout"
@@ -22,9 +45,9 @@
         android:layout_centerHorizontal="true">
 
         <View
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:background="@drawable/circular_shape"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:background="@drawable/circular_ring"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
 
@@ -40,14 +63,5 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/warning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start your step count"
-        android:layout_below="@id/counterLayout"
-        android:layout_centerHorizontal="true"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
 
 </RelativeLayout>
