@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         checkUserLogin();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
         setContentView(binding.getRoot());
 
