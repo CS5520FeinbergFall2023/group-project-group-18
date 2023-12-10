@@ -42,6 +42,9 @@ public class Post {
         }
         comments.add(comment);
     }
+    public void setComments(List<Comment> commentList) {
+        this.comments = commentList;
+    }
 
     public List<Comment> getComments() {
         return comments;

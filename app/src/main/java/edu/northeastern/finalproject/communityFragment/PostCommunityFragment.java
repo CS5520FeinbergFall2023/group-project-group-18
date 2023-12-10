@@ -84,7 +84,8 @@ public class PostCommunityFragment extends DialogFragment {
         String postId = db.collection("posts").document().getId();
         post.setPostId(postId);
         db.collection("posts")
-                .add(post)
+                .document(postId)
+                .set(post)
                 .addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
