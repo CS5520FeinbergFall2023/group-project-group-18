@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -74,6 +75,8 @@ public class MonthMoodFragment extends Fragment {
             mCalendarView = mRootView.findViewById(R.id.calendarViewMonth);
             initData();
         }
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         icStatusSignal = mRootView.findViewById(R.id.ic_status_signal);
         sideBar = mRootView.findViewById(R.id.ic_calender);
 
@@ -176,9 +179,9 @@ public class MonthMoodFragment extends Fragment {
     }
 
     private int getColorForMood(int moodScore) {
-        if (moodScore >= 0 && moodScore <= 4) return 0xFF0000FF; // Blue
-        else if (moodScore > 4 && moodScore <= 7) return 0xFF008000; // Green
-        else return 0xFFFFFF00; // Yellow
+        if (moodScore >= 0 && moodScore <= 4) return 0xFF2196F3; // Blue
+        else if (moodScore > 4 && moodScore <= 7) return 0xFF4CAF50; // Green
+        else return 0xFFFFEB3B; // Yellow
     }
     interface FirestoreCallback {
         void onCallback(Map<String, Integer> moodData);

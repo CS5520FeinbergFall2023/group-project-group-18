@@ -80,7 +80,7 @@ public class AddMoodFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         View view = inflater.inflate(R.layout.fragment_mood, container, false);
         moodSeekBar = view.findViewById(R.id.moodSeekBar);
@@ -378,8 +378,7 @@ public class AddMoodFragment extends Fragment {
                 if (document.exists()) {
                     // Check if the mood field is not null
                     if (document.contains("mood") && document.get("mood") != null) {
-                        int mood = document.getLong("mood").intValue(); // Cast to int if you're sure it's an integer
-                        // Now you can use this mood value to update your UI
+                        int mood = document.getLong("mood").intValue();
                         if (mood != lastMoodValue) {
                             moodSeekBar.setProgress(mood);
                             moodValueText.setText(String.valueOf(mood));
@@ -456,16 +455,10 @@ public class AddMoodFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(getActivity() != null) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
     }
     @Override
     public void onPause() {
         super.onPause();
-        if(getActivity() != null) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        }
     }
     private void displayCachedMood() {
         SharedPreferences preferences = getActivity().getSharedPreferences("MoodPreferences", Context.MODE_PRIVATE);

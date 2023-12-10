@@ -25,14 +25,14 @@ public class CustomMonthView extends MonthView {
 
     @Override
     protected boolean onDrawSelected(Canvas canvas, Calendar calendar, int x, int y, boolean hasScheme) {
-        return false;
+        return true;
     }
 
     @Override
     protected void onDrawScheme(Canvas canvas, Calendar calendar, int x, int y) {
         int cx = x + mItemWidth / 2;
         int top = y - mItemHeight / 6;
-        int cy = (int) (top + mTextBaseLine);
+        int cy = (int) (top + mTextBaseLine * 0.825);
         int radius = Math.min(mItemWidth, mItemHeight) / 3; // Adjust radius as needed
 
         if (calendar.getScheme() != null) {
