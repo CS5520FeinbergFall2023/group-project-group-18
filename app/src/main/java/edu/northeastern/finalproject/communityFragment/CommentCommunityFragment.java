@@ -13,6 +13,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -28,6 +30,8 @@ import edu.northeastern.finalproject.R;
 public class CommentCommunityFragment extends DialogFragment {
     private FirebaseFirestore db;
     private Context context;
+    private FirebaseAuth mAuth;
+    private String currentUserName;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -41,6 +45,14 @@ public class CommentCommunityFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_comment, container, false);
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userEmail = currentUser.getEmail();
+            currentUserName = userEmail.split("@")[0];
+        }
 
         Bundle args = getArguments();
 
@@ -49,7 +61,6 @@ public class CommentCommunityFragment extends DialogFragment {
 
             EditText etComment = view.findViewById(R.id.editTextComment);
 
-            // TODO “完成”按钮的点击事件
             Button btnFinishComment = view.findViewById(R.id.btnSubmitComment);
             btnFinishComment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -66,7 +77,7 @@ public class CommentCommunityFragment extends DialogFragment {
 
     private void updateDocumentCommentsInFirestore(String postId, String commentContent) {
 
-        Comment comment = new Comment("CURRENT USERNAME", commentContent);
+        Comment comment = new Comment(currentUserName, commentContent);
 
         DocumentReference postRef = db.collection("posts").document(postId);
 
